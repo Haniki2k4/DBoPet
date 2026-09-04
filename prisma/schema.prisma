@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum PetSpecies {
+  DOG
+  CAT
+  HAMSTER
+}
+
+enum Mood {
+  SAD
+  OKAY
+  HAPPY
+}
+
+model User {
+  id          String          @id @default(cuid())
+  discordId   String          @unique
+  level       Int             @default(1)
+  experience  Int             @default(0)
+  gold        Int             @default(150)
+  activeHouse HouseType       @default(BASIC)
+  lastDailyAt DateTime?
+  dailyStreak Int             @default(0)
+  gamesPlayed Int             @default(0)
+  gamesToday   Int             @default(0)
+  lastGameResetAt DateTime    @default(now())
+  feedCount   Int             @default(0)
+  pets        Pet[]
+  inventory   UserInventory[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model Pet {
+  id              String     @id @default(cuid())
+  ownerId         String
+  name            String
+  species         PetSpecies
+  variant         String
+  level           Int        @default(1)
+  experience      Int        @default(0)
+  affection       Int        @default(0)
+  comfort         Int        @default(60)
+  mood            Mood       @default(OKAY)
+  dailyPetCount   Int        @default(0)
+  lastPetResetAt  DateTime   @default(now())
+  lastFedAt       DateTime?
+  lastPettedAt    DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  owner           User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+model Food {
+  id            String          @id
+  name          String
+  icon          String
+  description   String
+  price         Int
+  unlockLevel   Int
+  petExperience Int
+  ownerExperience Int
+  comfortGain   Int
+  preferredBy   PetSpecies?
+  inventory     UserInventory[]
+}
+
+model UserInventory {
+  userId   String
+  foodId   String
+  quantity Int    @default(0)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  food     Food   @relation(fields: [foodId], references: [id], onDelete: Cascade)
+
+  @@id([userId, foodId])
+}
+
+enum HouseType {
+  BASIC
+  COZY
+  VILLA
+}

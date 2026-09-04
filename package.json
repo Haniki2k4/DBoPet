@@ -1,0 +1,40 @@
+{
+  "name": "discord-pet-haven",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Discord virtual pet bot",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "register": "tsx src/register-commands.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev --name init",
+    "db:seed": "prisma db seed",
+    "check": "tsc --noEmit"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "discord.js": "^14.22.1",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "prisma": "^6.16.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "esbuild@0.28.2": true,
+    "prisma@6.19.3": true
+  }
+}
