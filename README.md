@@ -1,3 +1,4 @@
+# D B o P e t 
 # Pet Haven Discord Bot
 
 Bot nuôi pet trên Discord: nhận pet chó/mèo/hamster, cho ăn bằng kho thức ăn, điểm danh hằng ngày, mua nhà ở, và chơi mini-game XO + dò mìn.
