@@ -11,8 +11,10 @@
     "register": "tsx src/register-commands.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --name init",
+    "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "postinstall": "prisma generate && prisma db push && prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -23,12 +25,12 @@
   "dependencies": {
     "@prisma/client": "^6.16.2",
     "discord.js": "^14.22.1",
-    "dotenv": "^16.6.1"
+    "dotenv": "^16.6.1",
+    "prisma": "^6.16.2",
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
-    "prisma": "^6.16.2",
-    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   },
   "allowScripts": {

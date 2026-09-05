@@ -8,6 +8,12 @@ export type MineState = {
   mines: number;
   userId: string;
   status: "playing" | "won" | "lost";
+  /** True once beginGame() has been called for this session (one slot consumed). */
+  counted: boolean;
+  /** Remaining games after this one was counted. */
+  gamesLeft: number;
+  /** Reward multiplier locked in at game-start. */
+  rewardMultiplier: number;
 };
 
 const EMOJI = ["⬜", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"];
@@ -39,7 +45,7 @@ export function createMineGame(userId: string, size: number, mines: number): Min
     }
   }
 
-  return { grid, revealed, flagged, size, mines, userId, status: "playing" };
+  return { grid, revealed, flagged, size, mines, userId, status: "playing", counted: false, gamesLeft: 0, rewardMultiplier: 1 };
 }
 
 export function reveal(state: MineState, r: number, c: number): void {

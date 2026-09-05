@@ -1,6 +1,7 @@
 import { prisma } from "../database/prisma.js";
 import { addUserExperience } from "./experience.service.js";
 import { GAME } from "../config/game.js";
+import { isNewVnDay, msUntilNextVnReset } from "../utils/time.js";
 
 const DAY_MS = 24 * 60 * 60 * 1_000;
 const STREAK_BONUS_PER_DAY = 5;
@@ -20,14 +21,12 @@ export async function claimDaily(userId: string): Promise<DailyResult> {
     const user = await tx.user.findUniqueOrThrow({ where: { id: userId } });
     const now = new Date();
 
-    if (user.lastDailyAt) {
-      const elapsed = now.getTime() - user.lastDailyAt.getTime();
-      if (elapsed < DAY_MS) {
-        const nextInHours = Math.ceil((DAY_MS - elapsed) / 3_600_000);
-        return { claimed: false, gold: 0, experience: 0, streak: user.dailyStreak, bonusPercent: 0, nextInHours };
-      }
+    if (user.lastDailyAt && !isNewVnDay(user.lastDailyAt, now)) {
+      const nextInHours = Math.ceil(msUntilNextVnReset(now) / 3_600_000);
+      return { claimed: false, gold: 0, experience: 0, streak: user.dailyStreak, bonusPercent: 0, nextInHours };
     }
 
+    // Streak broken if last claim was 2+ VN days ago
     const wasStreakBroken = user.lastDailyAt && (now.getTime() - user.lastDailyAt.getTime()) >= 2 * DAY_MS;
     const streak = wasStreakBroken ? 1 : user.dailyStreak + 1;
     const bonusPercent = Math.min((streak - 1) * STREAK_BONUS_PER_DAY, STREAK_BONUS_CAP);
@@ -43,3 +42,4 @@ export async function claimDaily(userId: string): Promise<DailyResult> {
     return { claimed: true, gold, experience, streak, bonusPercent, nextInHours: 0 };
   });
 }
+

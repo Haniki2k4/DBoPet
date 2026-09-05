@@ -1,7 +1,6 @@
 import { prisma } from "../database/prisma.js";
 import { GAME } from "../config/game.js";
-
-const DAY_MS = 24 * 60 * 60 * 1_000;
+import { isNewVnDay } from "../utils/time.js";
 
 export interface GameBudget {
   gamesLeftToday: number;
@@ -14,11 +13,11 @@ export async function beginGame(discordId: string, baseGold: number, baseExp: nu
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({ where: { discordId } });
     const now = new Date();
-    const resetNeeded = now.getTime() - user.lastGameResetAt.getTime() >= DAY_MS;
+    const resetNeeded = isNewVnDay(user.lastGameResetAt, now);
     const gamesToday = resetNeeded ? 0 : user.gamesToday;
 
     if (gamesToday >= GAME.minigame.maxGamesPerDay) {
-      throw new Error(`Bạn đã chơi đủ ${GAME.minigame.maxGamesPerDay} ván hôm nay. Quay lại vào ngày mai nhé!`);
+      throw new Error(`Bạn đã chơi đủ ${GAME.minigame.maxGamesPerDay} ván hôm nay. Lượt làm mới vào 06:00.`);
     }
 
     const nextCount = gamesToday + 1;

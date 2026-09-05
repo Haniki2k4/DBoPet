@@ -14,9 +14,9 @@ const WIN_BASE_EXPERIENCE = 30;
 const DRAW_BASE_EXPERIENCE = 8;
 
 export const MINE_DIFFICULTY = {
-  easy: { size: 5, mines: 4, gold: 20, exp: 15, label: "Dễ" },
-  medium: { size: 6, mines: 8, gold: 45, exp: 30, label: "Trung bình" },
-  hard: { size: 7, mines: 14, gold: 80, exp: 50, label: "Khó" }
+  easy: { size: 4, mines: 3, gold: 20, exp: 15, label: "Dễ" },
+  medium: { size: 5, mines: 8, gold: 45, exp: 30, label: "Trung bình" },
+  hard: { size: 5, mines: 10, gold: 80, exp: 50, label: "Khó" },
 } as const;
 
 type DifficultyKey = keyof typeof MINE_DIFFICULTY;
@@ -62,7 +62,8 @@ async function handleMineDiff(interaction: StringSelectMenuInteraction, rest: st
   const game = createMineGame(interaction.user.id, config.size, config.mines);
   mineGames.set(gameId, game);
   setTimeout(() => mineGames.delete(gameId), 10 * 60 * 1_000);
-  await interaction.update({ content: `💣 **Dò mìn ${config.label}** (${config.size}x${config.size}, ${config.mines} mìn). Bấm ô để dò, tránh mìn!`, components: mineRows(gameId, game) });
+  // index.ts already called deferUpdate(), so use editReply() here.
+  await interaction.editReply({ content: `💣 **Dò mìn ${config.label}** (${config.size}x${config.size}, ${config.mines} mìn). Bấm ô để dò, tránh mìn!`, components: mineRows(gameId, game) });
 }
 
 async function handleMine(interaction: ButtonInteraction, rest: string[]): Promise<void> {
@@ -76,22 +77,23 @@ async function handleMine(interaction: ButtonInteraction, rest: string[]): Promi
   if (!Number.isInteger(row) || !Number.isInteger(col)) throw new Error("Nước đi không hợp lệ.");
 
   const config = difficultyFor(game);
-  let gamesLeft = 0;
-  let rewardMultiplier = 1;
-  if (game.status === "playing") {
+  // Only consume one game slot on the very first cell reveal.
+  if (!game.counted) {
     try {
       const budget = await beginGame(interaction.user.id, config.gold, config.exp);
-      gamesLeft = budget.gamesLeftToday;
-      rewardMultiplier = budget.rewardMultiplier;
+      game.counted = true;
+      game.gamesLeft = budget.gamesLeftToday;
+      game.rewardMultiplier = budget.rewardMultiplier;
     } catch (error: unknown) {
       throw new Error(error instanceof Error ? error.message : "Không thể bắt đầu ván.");
     }
   }
+  const { gamesLeft, rewardMultiplier } = game;
 
   reveal(game, row, col);
 
   if (game.status === "lost") {
-    await interaction.update({ content: `💣 Bạn trúng mìn! Thử lại với /play nhé.`, components: mineRows(gameId, game) });
+    await interaction.editReply({ content: `💣 Bạn trúng mìn! Thử lại với /play nhé.`, components: mineRows(gameId, game) });
     mineGames.delete(gameId);
     return;
   }
@@ -100,12 +102,12 @@ async function handleMine(interaction: ButtonInteraction, rest: string[]): Promi
     const gold = Math.floor(config.gold * rewardMultiplier);
     const exp = Math.floor(config.exp * rewardMultiplier);
     await grantReward(interaction.user.id, gold, exp);
-    await interaction.update({ content: `🎉 Bạn thắng dò mìn! Nhận ${gold} vàng và ${exp} EXP${rewardMultiplier < 1 ? " (nửa thưởng)" : ""}.`, components: mineRows(gameId, game) });
+    await interaction.editReply({ content: `🎉 Bạn thắng dò mìn! Nhận ${gold} vàng và ${exp} EXP${rewardMultiplier < 1 ? " (nửa thưởng)" : ""}.`, components: mineRows(gameId, game) });
     mineGames.delete(gameId);
     return;
   }
 
-  await interaction.update({ content: `💣 **Dò mìn ${config.label}** — bấm ô để dò, tránh mìn. Còn ${gamesLeft} ván hôm nay.`, components: mineRows(gameId, game) });
+  await interaction.editReply({ content: `💣 **Dò mìn ${config.label}** — bấm ô để dò, tránh mìn. Còn ${gamesLeft} ván hôm nay.`, components: mineRows(gameId, game) });
 }
 
 function difficultyFor(game: MineState): typeof MINE_DIFFICULTY[DifficultyKey] {
@@ -119,20 +121,23 @@ async function handleXo(interaction: ButtonInteraction, rest: string[]): Promise
   const [gameId, cell] = rest;
   if (!gameId || !cell) return;
   const game = ticTacToe.get(gameId);
-  if (!game) throw new Error("Ván XO này đã hết hạn. Hãy dùng /play để chơi lại.");
-  if (game.userId !== interaction.user.id) throw new Error("Đây không phải ván XO của bạn.");
+  if (!game) throw new Error("Ván ticTacToe này đã hết hạn. Hãy dùng /play để chơi lại.");
+  if (game.userId !== interaction.user.id) throw new Error("Đây không phải ván ticTacToe của bạn.");
   const cellIndex = Number(cell);
   if (!Number.isInteger(cellIndex) || game.board[cellIndex] !== null || game.completed) throw new Error("Nước đi này không hợp lệ.");
 
-  let gamesLeft = 0;
-  let rewardMultiplier = 1;
-  try {
-    const budget = await beginGame(interaction.user.id, WIN_BASE_GOLD, WIN_BASE_EXPERIENCE);
-    gamesLeft = budget.gamesLeftToday;
-    rewardMultiplier = budget.rewardMultiplier;
-  } catch (error: unknown) {
-    throw new Error(error instanceof Error ? error.message : "Không thể bắt đầu ván.");
+  // Only consume one game slot on the very first move
+  if (!game.counted) {
+    try {
+      const budget = await beginGame(interaction.user.id, WIN_BASE_GOLD, WIN_BASE_EXPERIENCE);
+      game.counted = true;
+      game.gamesLeft = budget.gamesLeftToday;
+      game.rewardMultiplier = budget.rewardMultiplier;
+    } catch (error: unknown) {
+      throw new Error(error instanceof Error ? error.message : "Không thể bắt đầu ván.");
+    }
   }
+  const { gamesLeft, rewardMultiplier } = game;
 
   game.board[cellIndex] = "X";
   let outcome = winner(game.board);
@@ -156,7 +161,8 @@ async function handleXo(interaction: ButtonInteraction, rest: string[]): Promise
   } else if (outcome === "O") {
     content = `Bot thắng lần này. Thử lại với /play nhé! (Còn ${gamesLeft} ván hôm nay)`;
   }
-  await interaction.update({ content, components: boardRows(gameId, game) });
+  // index.ts already called deferUpdate(), so use editReply() here.
+  await interaction.editReply({ content, components: boardRows(gameId, game) });
   if (outcome) ticTacToe.delete(gameId);
 }
 

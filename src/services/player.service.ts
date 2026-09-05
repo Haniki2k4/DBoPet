@@ -1,5 +1,6 @@
 import { prisma } from "../database/prisma.js";
 import { GAME } from "../config/game.js";
+import { HouseType } from "@prisma/client";
 
 export async function ensurePlayer(discordId: string) {
   const player = await prisma.user.upsert({
@@ -13,6 +14,11 @@ export async function ensurePlayer(discordId: string) {
     update: {},
     create: { userId: player.id, foodId: "basic-kibble", quantity: GAME.starterFoodQuantity }
   });
+
+  const hasHouse = await prisma.userHouse.findFirst({ where: { userId: player.id } });
+  if (!hasHouse) {
+    await prisma.userHouse.create({ data: { userId: player.id, houseType: HouseType.BASIC } });
+  }
 
   return player;
 }

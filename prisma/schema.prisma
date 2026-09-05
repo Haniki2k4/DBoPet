@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -11,6 +12,9 @@ enum PetSpecies {
   DOG
   CAT
   HAMSTER
+  RABBIT
+  BIRD
+  FISH
 }
 
 enum Mood {
@@ -20,27 +24,30 @@ enum Mood {
 }
 
 model User {
-  id          String          @id @default(cuid())
-  discordId   String          @unique
-  level       Int             @default(1)
-  experience  Int             @default(0)
-  gold        Int             @default(150)
-  activeHouse HouseType       @default(BASIC)
-  lastDailyAt DateTime?
-  dailyStreak Int             @default(0)
-  gamesPlayed Int             @default(0)
-  gamesToday   Int             @default(0)
-  lastGameResetAt DateTime    @default(now())
-  feedCount   Int             @default(0)
-  pets        Pet[]
-  inventory   UserInventory[]
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id                String          @id @default(cuid())
+  discordId         String          @unique
+  level             Int             @default(1)
+  experience        Int             @default(0)
+  gold              Int             @default(150)
+  activeHouse       HouseType       @default(BASIC)
+  ownedHouseSlots   Int             @default(1)
+  lastDailyAt       DateTime?
+  dailyStreak       Int             @default(0)
+  gamesPlayed       Int             @default(0)
+  gamesToday        Int             @default(0)
+  lastGameResetAt   DateTime        @default(now())
+  feedCount         Int             @default(0)
+  pets              Pet[]
+  inventory         UserInventory[]
+  houses            UserHouse[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
 model Pet {
   id              String     @id @default(cuid())
   ownerId         String
+  petCode         String
   name            String
   species         PetSpecies
   variant         String
@@ -56,20 +63,22 @@ model Pet {
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
   owner           User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, petCode])
 }
 
 model Food {
-  id            String          @id
-  name          String
-  icon          String
-  description   String
-  price         Int
-  unlockLevel   Int
-  petExperience Int
+  id              String          @id
+  name            String
+  icon            String
+  description     String
+  price           Int
+  unlockLevel     Int
+  petExperience   Int
   ownerExperience Int
-  comfortGain   Int
-  preferredBy   PetSpecies?
-  inventory     UserInventory[]
+  comfortGain     Int
+  preferredBy     PetSpecies?
+  inventory       UserInventory[]
 }
 
 model UserInventory {
@@ -80,6 +89,20 @@ model UserInventory {
   food     Food   @relation(fields: [foodId], references: [id], onDelete: Cascade)
 
   @@id([userId, foodId])
+}
+
+model UserHouse {
+  userId    String
+  houseType HouseType
+  boughtAt  DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, houseType])
+}
+
+model GuildConfig {
+  guildId String @id
+  prefix  String @default("p!")
 }
 
 enum HouseType {

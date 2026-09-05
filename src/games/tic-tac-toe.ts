@@ -5,10 +5,17 @@ const WINNING_LINES = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
 ] as const;
 
-export type GameState = { board: Array<"X" | "O" | null>; userId: string; completed: boolean };
+export type GameState = {
+  board: Array<"X" | "O" | null>;
+  userId: string;
+  completed: boolean;
+  counted: boolean;
+  gamesLeft: number;
+  rewardMultiplier: number;
+};
 
 export function createGame(userId: string): GameState {
-  return { board: Array.from({ length: BOARD_SIZE }, () => null), userId, completed: false };
+  return { board: Array.from({ length: BOARD_SIZE }, () => null), userId, completed: false, counted: false, gamesLeft: 0, rewardMultiplier: 1 };
 }
 
 export function winner(board: GameState["board"]): "X" | "O" | "DRAW" | null {
