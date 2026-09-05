@@ -27,7 +27,8 @@
     "discord.js": "^14.22.1",
     "dotenv": "^16.6.1",
     "prisma": "^6.16.2",
-    "tsx": "^4.20.5"
+    "tsx": "^4.20.5",
+    "pkg-types": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
