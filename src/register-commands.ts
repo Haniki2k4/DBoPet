@@ -7,5 +7,9 @@ const route = env.guildId
   ? Routes.applicationGuildCommands(env.clientId, env.guildId)
   : Routes.applicationCommands(env.clientId);
 
-await rest.put(route, { body: commands });
-console.log(`Registered ${commands.length} ${env.guildId ? "guild" : "global"} commands.`);
+async function main(): Promise<void> {
+  await rest.put(route, { body: commands });
+  console.log(`Registered ${commands.length} ${env.guildId ? "guild" : "global"} commands.`);
+}
+
+void main();

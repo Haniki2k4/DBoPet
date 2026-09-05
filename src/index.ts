@@ -84,5 +84,9 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
   }
 });
 
-await client.login(env.token);
+async function main(): Promise<void> {
+  await client.login(env.token);
+}
+
+void main();
 
