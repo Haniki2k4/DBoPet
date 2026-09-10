@@ -115,21 +115,23 @@ async function pAdopt(message: Message, userId: string, args: string[]): Promise
   const speciesRaw = args[0]?.toUpperCase();
   const name = args.slice(1).join(" ").trim();
   if (!speciesRaw || !name) {
-    await message.reply("Cách dùng: `p!adopt <loài> <tên>` — loài: DOG, CAT, HAMSTER, RABBIT, BIRD, FISH. Ví dụ: `p!adopt rabbit Thỏ Con`");
+    await message.reply("Cách dùng: `p!adopt <loài> <tên>` \u2014 loài: dog, cat, hamster, rabbit, bird, fish, snake, spider, rat, ferret, unicorn. Ví dụ: `p!adopt rabbit Thỏ Con`");
     return;
   }
   const species = normalizeSpecies(speciesRaw);
   if (!species) {
-    await message.reply("Loài không hợp lệ. Chọn: dog, cat, hamster, rabbit, bird, fish.");
+    await message.reply("Loài không hợp lệ. Chọn: dog, cat, hamster, rabbit, bird, fish, snake, spider, rat, ferret, unicorn.");
     return;
   }
   const option = SPECIES[species];
   const variant = option.variants[Math.floor(Math.random() * option.variants.length)];
-  const petCount = await prisma.pet.count({ where: { ownerId: userId } });
-  const feeNote = petCount >= GAME.adopt.freeAdopts ? ` (phí ${GAME.adopt.cost} vàng)` : " (miễn phí)";
-  const { feeApplied } = await adoptPet(userId, species, name, variant);
-  const feeMsg = feeApplied ? `\n🪙 Đã trừ ${GAME.adopt.cost} vàng phí nhận nuôi.` : "";
-  await privateReply(message, `✨ Bạn đã nhận **${name}** — ${option.icon} ${option.label} giống ${variant}${feeNote}${feeMsg}\nDùng **p!feed ${name} <mã thức ăn>** để cho ăn!`);
+  const { feeApplied, tierExtra } = await adoptPet(userId, species, name, variant);
+  const costParts: string[] = [];
+  if (feeApplied) costParts.push(`${GAME.adopt.cost} vàng phí nhận nuôi`);
+  if (tierExtra > 0) costParts.push(`${tierExtra} vàng phí loài đặc biệt`);
+  const feeMsg = costParts.length > 0 ? `\n🪙 Đã trừ ${costParts.join(" + ")}.` : "";
+  const freeNote = !feeApplied && tierExtra === 0 ? " (miễn phí)" : "";
+  await privateReply(message, `✨ Bạn đã nhận **${name}** — ${option.icon} ${option.label} giống ${variant}${freeNote}${feeMsg}\nDùng **p!feed ${name} <mã thức ăn>** để cho ăn!`);
 }
 
 function normalizeSpecies(raw: string): PetSpecies | null {
@@ -140,6 +142,11 @@ function normalizeSpecies(raw: string): PetSpecies | null {
     RABBIT: PetSpecies.RABBIT, THO: PetSpecies.RABBIT,
     BIRD: PetSpecies.BIRD, CHIM: PetSpecies.BIRD,
     FISH: PetSpecies.FISH, CA: PetSpecies.FISH, FISHES: PetSpecies.FISH,
+    SNAKE: PetSpecies.SNAKE, RAN: PetSpecies.SNAKE,
+    SPIDER: PetSpecies.SPIDER, NHEN: PetSpecies.SPIDER,
+    RAT: PetSpecies.RAT, CHUOT: PetSpecies.RAT,
+    FERRET: PetSpecies.FERRET, CHON: PetSpecies.FERRET,
+    UNICORN: PetSpecies.UNICORN, KYLAN: PetSpecies.UNICORN,
   };
   return aliases[raw] ?? null;
 }

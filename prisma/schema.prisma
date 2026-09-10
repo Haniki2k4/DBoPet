@@ -15,6 +15,11 @@ enum PetSpecies {
   RABBIT
   BIRD
   FISH
+  SNAKE
+  SPIDER
+  RAT
+  FERRET
+  UNICORN
 }
 
 enum Mood {

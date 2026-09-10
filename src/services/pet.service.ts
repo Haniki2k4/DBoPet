@@ -1,5 +1,5 @@
 import { HouseType, PetSpecies } from "@prisma/client";
-import { GAME, HOUSE_PRIORITY, moodForComfort, petExperienceBonus } from "../config/game.js";
+import { GAME, HOUSE_PRIORITY, moodForComfort, petExperienceBonus, SPECIES_TIER } from "../config/game.js";
 import { prisma } from "../database/prisma.js";
 import { addPetExperience, addUserExperience } from "./experience.service.js";
 import { isNewVnDay } from "../utils/time.js";
@@ -13,12 +13,17 @@ function resolvePetCode(input: string): string {
 }
 
 const SPECIES_PREFIX: Record<PetSpecies, string> = {
-  [PetSpecies.DOG]: "00",
-  [PetSpecies.CAT]: "01",
+  [PetSpecies.DOG]:     "00",
+  [PetSpecies.CAT]:     "01",
   [PetSpecies.HAMSTER]: "02",
-  [PetSpecies.RABBIT]: "03",
-  [PetSpecies.BIRD]: "04",
-  [PetSpecies.FISH]: "05",
+  [PetSpecies.RABBIT]:  "03",
+  [PetSpecies.BIRD]:    "04",
+  [PetSpecies.FISH]:    "05",
+  [PetSpecies.SNAKE]:   "06",
+  [PetSpecies.SPIDER]:  "07",
+  [PetSpecies.RAT]:     "08",
+  [PetSpecies.FERRET]:  "09",
+  [PetSpecies.UNICORN]: "10",
 };
 
 /** Total pet capacity from all owned houses (sum of maxPets). Defaults to BASIC capacity if no house owned. */
@@ -42,7 +47,7 @@ export async function adoptPet(ownerId: string, species: PetSpecies, name: strin
     // Tên pet phải unique trong cùng owner
     const existingName = await tx.pet.findFirst({ where: { ownerId, name } });
     if (existingName) {
-      throw new Error(`Bạn đã có pet tên "${name}" rồi. Hãy chọn tên khác.`);
+      throw new Error(`Bạn đã có pet tên “${name}” rồi. Hãy chọn tên khác.`);
     }
 
     const petCount = await tx.pet.count({ where: { ownerId } });
@@ -54,18 +59,32 @@ export async function adoptPet(ownerId: string, species: PetSpecies, name: strin
       );
     }
 
+    // Kiểm tra yêu cầu level và giá theo tier loài
+    const tier = SPECIES_TIER[species];
+    if (tier && user.level < tier.minLevel) {
+      throw new Error(`Bạn cần đạt **Level ${tier.minLevel}** để nhận nuôi loài này. Level hiện tại của bạn: ${user.level}.`);
+    }
+
     const feeApplied = petCount >= GAME.adopt.freeAdopts;
+    const tierExtra = tier?.extraCost ?? 0;
+    const totalCost = GAME.adopt.cost + tierExtra;
     if (feeApplied) {
-      if (user.gold < GAME.adopt.cost) {
-        throw new Error(`Bạn cần ${GAME.adopt.cost} vàng để nhận pet thứ ${petCount + 1}. Hiện có ${user.gold} vàng. Kiếm thêm bằng /daily hoặc /play.`);
+      if (user.gold < totalCost) {
+        throw new Error(`Bạn cần ${totalCost} vàng để nhận pet thứ ${petCount + 1}. Hiện có ${user.gold} vàng. Kiếm thêm bằng /daily hoặc /play.`);
       }
-      await tx.user.update({ where: { id: ownerId }, data: { gold: { decrement: GAME.adopt.cost } } });
+      await tx.user.update({ where: { id: ownerId }, data: { gold: { decrement: totalCost } } });
+    } else if (tierExtra > 0) {
+      // Pet miễn phí nhưng loài v2/v3 vẫn cần trừ tiền tier
+      if (user.gold < tierExtra) {
+        throw new Error(`Bạn cần ${tierExtra} vàng để nhận nuôi loài này. Hiện có ${user.gold} vàng.`);
+      }
+      await tx.user.update({ where: { id: ownerId }, data: { gold: { decrement: tierExtra } } });
     }
 
     const seq = String(speciesCount + 1).padStart(3, "0");
     const petCode = `${SPECIES_PREFIX[species]}${seq}`;
     const pet = await tx.pet.create({ data: { ownerId, species, name, variant, petCode } });
-    return { pet, feeApplied };
+    return { pet, feeApplied, tierExtra };
   });
 }
 

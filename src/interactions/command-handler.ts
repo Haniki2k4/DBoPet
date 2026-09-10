@@ -97,11 +97,18 @@ async function adopt(interaction: ChatInputCommandInteraction): Promise<void> {
   const option = SPECIES[species];
   const variant = option.variants[Math.floor(Math.random() * option.variants.length)];
   const petCount = await prisma.pet.count({ where: { ownerId: player.id } });
-  const feeNote = petCount >= GAME.adopt.freeAdopts ? ` (phí ${GAME.adopt.cost} vàng)` : " (miễn phí)";
-  const { pet, feeApplied } = await adoptPet(player.id, species, name, variant);
-  const feeMsg = feeApplied ? `\n🪙 Đã trừ ${GAME.adopt.cost} vàng phí nhận nuôi.` : "";
+  const { pet, feeApplied, tierExtra } = await adoptPet(player.id, species, name, variant);
+  const baseCost = feeApplied ? GAME.adopt.cost : 0;
+  const totalCost = baseCost + (feeApplied ? tierExtra : tierExtra);
+  const costParts: string[] = [];
+  if (feeApplied) costParts.push(`${GAME.adopt.cost} vàng phí nhận nuôi`);
+  if (tierExtra > 0) costParts.push(`${tierExtra} vàng phí loài đặc biệt`);
+  const feeMsg = costParts.length > 0 ? `\n🪙 Đã trừ ${costParts.join(" + ")}.` : "";
+  const freeNote = !feeApplied && tierExtra === 0 ? " (miễn phí)" : "";
+  void pet;
+  void petCount;
   await interaction.editReply(
-    `✨ Bạn đã nhận **${name}** — ${option.icon} ${option.label} giống **${variant}**${feeNote}${feeMsg}\nDùng /feed hoặc /petting để chăm sóc pet của bạn.`
+    `✨ Bạn đã nhận **${name}** — ${option.icon} ${option.label} giống **${variant}**${freeNote}${feeMsg}\nDùng /feed hoặc /petting để chăm sóc pet của bạn.`
   );
 }
 

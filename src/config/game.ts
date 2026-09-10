@@ -34,12 +34,28 @@ export const GAME = {
 } as const;
 
 export const SPECIES = {
-  [PetSpecies.DOG]:     { label: "Chó",    icon: "🐶", variants: ["Corgi", "Shiba", "Golden", "Poodle", "Husky"] },
-  [PetSpecies.CAT]:     { label: "Mèo",    icon: "🐱", variants: ["Mướp", "Anh lông ngắn", "Maine Coon", "Munchkin", "Ragdoll"] },
-  [PetSpecies.HAMSTER]: { label: "Hamster", icon: "🐹", variants: ["Syrian", "Robo", "Winter White", "Chinese"] },
-  [PetSpecies.RABBIT]:  { label: "Thỏ",    icon: "🐰", variants: ["Dutch", "Angora", "Lop", "Rex"] },
-  [PetSpecies.BIRD]:    { label: "Chim",   icon: "🐦", variants: ["Vẹt", "Yến", "Bạch yến", "Chích chòe"] },
-  [PetSpecies.FISH]:    { label: "Cá",     icon: "🐟", variants: ["Cá vàng", "Betta", "Koi", "Neon Tetra"] },
+  [PetSpecies.DOG]:     { label: "Chó",     icon: "🐶", variants: ["Corgi", "Shiba", "Golden", "Poodle", "Husky"] },
+  [PetSpecies.CAT]:     { label: "Mèo",     icon: "🐱", variants: ["Mướp", "Anh lông ngắn", "Maine Coon", "Munchkin", "Ragdoll"] },
+  [PetSpecies.HAMSTER]: { label: "Hamster",  icon: "🐹", variants: ["Syrian", "Robo", "Winter White", "Chinese"] },
+  [PetSpecies.RABBIT]:  { label: "Thỏ",     icon: "🐰", variants: ["Dutch", "Angora", "Lop", "Rex"] },
+  [PetSpecies.BIRD]:    { label: "Chim",    icon: "🐦", variants: ["Vẹt", "Yến", "Bạch yến", "Chích chòe"] },
+  [PetSpecies.FISH]:    { label: "Cá",      icon: "🐟", variants: ["Cá vàng", "Betta", "Koi", "Neon Tetra"] },
+  // v2 — +50 vàng so với phí nhận nuôi thông thường
+  [PetSpecies.SNAKE]:   { label: "Rắn",     icon: "🐍", variants: ["Trăn bóng", "Rắn bắp cày", "Rắn ngô", "Rắn hoàng đế"] },
+  [PetSpecies.SPIDER]:  { label: "Nhện",    icon: "🕷️", variants: ["Tarantula Hồng", "Tarantula Xanh", "Nhện Đỏ", "Nhện Lông Vàng"] },
+  [PetSpecies.RAT]:     { label: "Chuột",   icon: "🐀", variants: ["Dumbo", "Fancy", "Rex", "Hairless"] },
+  [PetSpecies.FERRET]:  { label: "Chồn",    icon: "🦡", variants: ["Sable", "Albino", "Silver Mitt", "Chocolate"] },
+  // v3 — +100 vàng + yêu cầu lv15
+  [PetSpecies.UNICORN]: { label: "Kỳ lân",  icon: "🦄", variants: ["Cầu vồng", "Ngân hà", "Bình minh", "Hoàng hôn", "Đêm sao"] },
+} as const;
+
+/** Chi phí và yêu cầu level bổ sung theo loài (chồng lên GAME.adopt.cost). */
+export const SPECIES_TIER: Partial<Record<PetSpecies, { extraCost: number; minLevel: number }>> = {
+  [PetSpecies.SNAKE]:   { extraCost: 50,  minLevel: 1 },
+  [PetSpecies.SPIDER]:  { extraCost: 50,  minLevel: 1 },
+  [PetSpecies.RAT]:     { extraCost: 50,  minLevel: 1 },
+  [PetSpecies.FERRET]:  { extraCost: 50,  minLevel: 1 },
+  [PetSpecies.UNICORN]: { extraCost: 100, minLevel: 15 },
 } as const;
 
 export function moodForComfort(comfort: number): Mood {

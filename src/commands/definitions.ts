@@ -7,7 +7,10 @@ export const commands = [
     .setDescription("Nhận một pet mới")
     .addStringOption((option) => option.setName("species").setDescription("Loài pet").setRequired(true).addChoices(
       { name: "🐶 Chó", value: "DOG" }, { name: "🐱 Mèo", value: "CAT" }, { name: "🐹 Hamster", value: "HAMSTER" },
-      { name: "🐰 Thỏ", value: "RABBIT" }, { name: "🐦 Chim", value: "BIRD" }, { name: "🐟 Cá", value: "FISH" }
+      { name: "🐰 Thỏ", value: "RABBIT" }, { name: "🐦 Chim", value: "BIRD" }, { name: "🐟 Cá", value: "FISH" },
+      { name: "🐍 Rắn", value: "SNAKE" }, { name: "🕷️ Nhện", value: "SPIDER" },
+      { name: "🐀 Chuột", value: "RAT" }, { name: "🦡 Chồn", value: "FERRET" },
+      { name: "🦄 Kỳ lân", value: "UNICORN" }
     ))
     .addStringOption((option) => option.setName("name").setDescription("Tên pet").setRequired(true).setMaxLength(24)),
   new SlashCommandBuilder().setName("profile").setDescription("Xem level, EXP và vàng"),

@@ -37,11 +37,8 @@ function buildAnnouncementEmbed(entry: ChangelogEntry): EmbedBuilder {
   const embed = new EmbedBuilder()
     .setColor(0x7BC96F)
     .setTitle(`📢 Pet Haven — Cập nhật v${entry.version}`)
-    .setDescription(entry.notes.map((note) => `• ${note}`).join("\n"))
+    .setDescription(entry.info.map((line) => `• ${line}`).join("\n"))
     .setFooter({ text: `Ngày phát hành: ${entry.date}` });
-  if (entry.info.length > 0) {
-    embed.addFields({ name: "📊 Thông tin bản cập nhật", value: entry.info.join("\n"), inline: false });
-  }
   return embed;
 }
 
