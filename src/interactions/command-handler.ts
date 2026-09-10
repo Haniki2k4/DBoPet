@@ -10,6 +10,7 @@ import { buyFood, buyHouse } from "../services/shop.service.js";
 import { claimDaily } from "../services/daily.service.js";
 import { setPrefix } from "../services/guild.service.js";
 import { getNotificationChannel, setNotificationChannel, sendLatestUpdateToGuild } from "../services/announcement.service.js";
+import { CHANGELOG, currentVersion } from "../config/release.js";
 import { prisma } from "../database/prisma.js";
 
 export async function handleCommand(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -26,6 +27,7 @@ export async function handleCommand(interaction: ChatInputCommandInteraction): P
     case "house": return house(interaction);
     case "setprefix": return setprefix(interaction);
     case "notify": return notify(interaction);
+    case "version": return version(interaction);
     case "play": return play(interaction);
     case "help": return help(interaction);
     case "leaderboard": return leaderboard(interaction);
@@ -380,6 +382,20 @@ function isTextChannelType(type: ChannelType): boolean {
   ].includes(type);
 }
 
+function buildVersionEmbed(): EmbedBuilder {
+  const current = currentVersion();
+  const latest = CHANGELOG[0];
+  return new EmbedBuilder()
+    .setColor(0x7BC96F)
+    .setTitle(`ℹ️ Pet Haven — Phiên bản v${current}`)
+    .setDescription(latest ? latest.info.map((line) => `• ${line}`).join("\n") : "Không có ghi chú mới.")
+    .setFooter({ text: latest ? `Bản cập nhật mới nhất: v${latest.version} (${latest.date})` : "" });
+}
+
+async function version(interaction: ChatInputCommandInteraction): Promise<void> {
+  await interaction.reply({ embeds: [buildVersionEmbed()] });
+}
+
 async function play(interaction: ChatInputCommandInteraction): Promise<void> {
   await ensurePlayer(interaction.user.id);
   const gameOption = interaction.options.getString("game", true);
@@ -419,7 +435,8 @@ async function help(interaction: ChatInputCommandInteraction): Promise<void> {
     "`/start` — tạo hồ sơ nếu chưa có",
     "",
     "**Server**",
-    "`/notify #kênh` — đăng ký nhận thông báo cập nhật (gõ /notify để tắt)"
+    "`/notify #kênh` — đăng ký nhận thông báo cập nhật (gõ /notify để tắt)",
+    "`/version` — xem phiên bản hiện tại và ghi chú mới nhất"
   ].join("\n");
   await interaction.reply({ embeds: [new EmbedBuilder().setColor(0x5865F2).setTitle("🐾 Pet Haven — Hướng dẫn").setDescription(description)] });
 }

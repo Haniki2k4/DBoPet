@@ -75,7 +75,7 @@ var require_dist = __commonJS({
       polyfillDispose: () => polyfillDispose,
       range: () => range,
       shouldUseGlobalFetchAndWebSocket: () => shouldUseGlobalFetchAndWebSocket,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(index_exports);
     function lazy(cb) {
@@ -167,7 +167,7 @@ var require_dist = __commonJS({
       }
       name = _GatewayRateLimitError.name;
     };
-    var version = "1.2.0";
+    var version2 = "1.2.0";
   }
 });
 
@@ -1921,36 +1921,36 @@ var require_diagnostics = __commonJS({
       const debuglog = fetchDebuglog.enabled ? fetchDebuglog : undiciDebugLog;
       diagnosticsChannel.channel("undici:client:beforeConnect").subscribe((evt) => {
         const {
-          connectParams: { version, protocol, port, host }
+          connectParams: { version: version2, protocol, port, host }
         } = evt;
         debuglog(
           "connecting to %s using %s%s",
           `${host}${port ? `:${port}` : ""}`,
           protocol,
-          version
+          version2
         );
       });
       diagnosticsChannel.channel("undici:client:connected").subscribe((evt) => {
         const {
-          connectParams: { version, protocol, port, host }
+          connectParams: { version: version2, protocol, port, host }
         } = evt;
         debuglog(
           "connected to %s using %s%s",
           `${host}${port ? `:${port}` : ""}`,
           protocol,
-          version
+          version2
         );
       });
       diagnosticsChannel.channel("undici:client:connectError").subscribe((evt) => {
         const {
-          connectParams: { version, protocol, port, host },
+          connectParams: { version: version2, protocol, port, host },
           error
         } = evt;
         debuglog(
           "connection to %s using %s%s errored - %s",
           `${host}${port ? `:${port}` : ""}`,
           protocol,
-          version,
+          version2,
           error.message
         );
       });
@@ -1999,31 +1999,31 @@ var require_diagnostics = __commonJS({
         const debuglog = undiciDebugLog.enabled ? undiciDebugLog : websocketDebuglog;
         diagnosticsChannel.channel("undici:client:beforeConnect").subscribe((evt) => {
           const {
-            connectParams: { version, protocol, port, host }
+            connectParams: { version: version2, protocol, port, host }
           } = evt;
           debuglog(
             "connecting to %s%s using %s%s",
             host,
             port ? `:${port}` : "",
             protocol,
-            version
+            version2
           );
         });
         diagnosticsChannel.channel("undici:client:connected").subscribe((evt) => {
           const {
-            connectParams: { version, protocol, port, host }
+            connectParams: { version: version2, protocol, port, host }
           } = evt;
           debuglog(
             "connected to %s%s using %s%s",
             host,
             port ? `:${port}` : "",
             protocol,
-            version
+            version2
           );
         });
         diagnosticsChannel.channel("undici:client:connectError").subscribe((evt) => {
           const {
-            connectParams: { version, protocol, port, host },
+            connectParams: { version: version2, protocol, port, host },
             error
           } = evt;
           debuglog(
@@ -2031,7 +2031,7 @@ var require_diagnostics = __commonJS({
             host,
             port ? `:${port}` : "",
             protocol,
-            version,
+            version2,
             error.message
           );
         });
@@ -23109,7 +23109,7 @@ var require_dist2 = __commonJS({
     var src_exports = {};
     __export2(src_exports, {
       Collection: () => Collection2,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(src_exports);
     var Collection2 = class _Collection extends Map {
@@ -23641,7 +23641,7 @@ var require_dist2 = __commonJS({
         return coll;
       }
     };
-    var version = "2.1.1";
+    var version2 = "2.1.1";
   }
 });
 
@@ -28133,7 +28133,7 @@ var require_dist5 = __commonJS({
       calculateUserDefaultAvatarIndex: () => calculateUserDefaultAvatarIndex,
       makeURLSearchParams: () => makeURLSearchParams2,
       parseResponse: () => parseResponse,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(index_exports);
     var import_node_buffer = require("buffer");
@@ -29607,7 +29607,7 @@ ${flattened}` : error.message || flattened || "Unknown Error";
         };
       }
     };
-    var version = "2.6.3";
+    var version2 = "2.6.3";
     globalThis.FormData ??= import_undici2.FormData;
     globalThis.Blob ??= import_node_buffer.Blob;
     setDefaultStrategy((0, import_util2.shouldUseGlobalFetchAndWebSocket)() ? fetch : makeRequest);
@@ -30266,7 +30266,7 @@ var require_dist6 = __commonJS({
     var src_exports = {};
     __export2(src_exports, {
       Collection: () => Collection2,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(src_exports);
     var Collection2 = class _Collection extends Map {
@@ -30774,7 +30774,7 @@ var require_dist6 = __commonJS({
         return coll;
       }
     };
-    var version = "1.5.3";
+    var version2 = "1.5.3";
   }
 });
 
@@ -31144,7 +31144,7 @@ var require_dist7 = __commonJS({
       underscore: () => underscore,
       unorderedList: () => unorderedList,
       userMention: () => userMention,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(index_exports);
     function escapeMarkdown(text, options = {}) {
@@ -31538,7 +31538,7 @@ ${content}
       GuildNavigationMentions2["LinkedRoles"] = "<id:linked-roles>";
       return GuildNavigationMentions2;
     })(GuildNavigationMentions || {});
-    var version = "0.6.2";
+    var version2 = "0.6.2";
   }
 });
 
@@ -33705,7 +33705,7 @@ var require_Options = __commonJS({
     "use strict";
     var { DefaultRestOptions, DefaultUserAgentAppendix } = require_dist5();
     var { toSnakeCase } = require_Transformers();
-    var { version } = require_package();
+    var { version: version2 } = require_package();
     var Options2 = class extends null {
       /**
        * The default user agent appendix.
@@ -33713,7 +33713,7 @@ var require_Options = __commonJS({
        * @memberof Options
        * @private
        */
-      static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trimEnd();
+      static userAgentAppendix = `discord.js/${version2} ${DefaultUserAgentAppendix}`.trimEnd();
       /**
        * The default client options.
        * @returns {ClientOptions}
@@ -41799,9 +41799,9 @@ ${givenBlock}`;
       };
     }
     __name(stringUrl, "stringUrl");
-    function stringIp(version, options) {
-      const ipVersion = version ? `v${version}` : "";
-      const validatorFn = version === 4 ? isIPv4 : version === 6 ? isIPv6 : isIP;
+    function stringIp(version2, options) {
+      const ipVersion = version2 ? `v${version2}` : "";
+      const validatorFn = version2 === 4 ? isIPv4 : version2 === 6 ? isIPv6 : isIP;
       const name = `s.string().ip${ipVersion}()`;
       const message = `Invalid IP${ipVersion} address`;
       const expected = `expected to be an IP${ipVersion} address`;
@@ -41816,13 +41816,13 @@ ${givenBlock}`;
       return stringRegexValidator("s.string().regex()", `expected ${regex}.test(expected) to be true`, regex, options);
     }
     __name(stringRegex, "stringRegex");
-    function stringUuid({ version = 4, nullable = false } = {}, options) {
-      version ?? (version = "1-5");
+    function stringUuid({ version: version2 = 4, nullable = false } = {}, options) {
+      version2 ?? (version2 = "1-5");
       const regex = new RegExp(
-        `^(?:[0-9A-F]{8}-[0-9A-F]{4}-[${version}][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}${nullable ? "|00000000-0000-0000-0000-000000000000" : ""})$`,
+        `^(?:[0-9A-F]{8}-[0-9A-F]{4}-[${version2}][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}${nullable ? "|00000000-0000-0000-0000-000000000000" : ""})$`,
         "i"
       );
-      const expected = `expected to match UUID${typeof version === "number" ? `v${version}` : ` in range of ${version}`}`;
+      const expected = `expected to match UUID${typeof version2 === "number" ? `v${version2}` : ` in range of ${version2}`}`;
       return stringRegexValidator("s.string().uuid()", expected, regex, options);
     }
     __name(stringUuid, "stringUuid");
@@ -41905,8 +41905,8 @@ ${givenBlock}`;
       ipv6(options = this.validatorOptions) {
         return this.ip(6, options);
       }
-      ip(version, options = this.validatorOptions) {
-        return this.addConstraint(stringIp(version, options));
+      ip(version2, options = this.validatorOptions) {
+        return this.addConstraint(stringIp(version2, options));
       }
       phone(options = this.validatorOptions) {
         return this.addConstraint(stringPhone(options));
@@ -42989,7 +42989,7 @@ var require_dist8 = __commonJS({
       isValidationEnabled: () => isValidationEnabled,
       normalizeArray: () => normalizeArray,
       resolveBuilder: () => resolveBuilder,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(index_exports);
     var Assertions_exports = {};
@@ -47464,7 +47464,7 @@ var require_dist8 = __commonJS({
       return (data.title?.length ?? 0) + (data.description?.length ?? 0) + (data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) + (data.footer?.text.length ?? 0) + (data.author?.name.length ?? 0);
     }
     __name(embedLength, "embedLength");
-    var version = "1.14.1";
+    var version2 = "1.14.1";
   }
 });
 
@@ -60379,7 +60379,7 @@ var require_dist9 = __commonJS({
     var src_exports = {};
     __export2(src_exports, {
       Collection: () => Collection2,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(src_exports);
     var Collection2 = class _Collection extends Map {
@@ -60911,7 +60911,7 @@ var require_dist9 = __commonJS({
         return coll;
       }
     };
-    var version = "2.1.1";
+    var version2 = "2.1.1";
   }
 });
 
@@ -64392,7 +64392,7 @@ var require_websocket_server = __commonJS({
         socket.on("error", socketOnError);
         const key = req.headers["sec-websocket-key"];
         const upgrade = req.headers.upgrade;
-        const version = +req.headers["sec-websocket-version"];
+        const version2 = +req.headers["sec-websocket-version"];
         if (req.method !== "GET") {
           const message = "Invalid HTTP method";
           abortHandshakeOrEmitwsClientError(this, req, socket, 405, message);
@@ -64408,7 +64408,7 @@ var require_websocket_server = __commonJS({
           abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
           return;
         }
-        if (version !== 13 && version !== 8) {
+        if (version2 !== 13 && version2 !== 8) {
           const message = "Missing or invalid Sec-WebSocket-Version header";
           abortHandshakeOrEmitwsClientError(this, req, socket, 400, message, {
             "Sec-WebSocket-Version": "13, 8"
@@ -64452,7 +64452,7 @@ var require_websocket_server = __commonJS({
         }
         if (this.options.verifyClient) {
           const info = {
-            origin: req.headers[`${version === 8 ? "sec-websocket-origin" : "origin"}`],
+            origin: req.headers[`${version2 === 8 ? "sec-websocket-origin" : "origin"}`],
             secure: !!(req.socket.authorized || req.socket.encrypted),
             req
           };
@@ -64666,7 +64666,7 @@ var require_dist10 = __commonJS({
       WorkerShardingStrategy: () => WorkerShardingStrategy,
       getInitialSendRateLimitState: () => getInitialSendRateLimitState,
       managerToFetchingStrategyOptions: () => managerToFetchingStrategyOptions,
-      version: () => version
+      version: () => version2
     });
     module2.exports = __toCommonJS2(src_exports);
     async function managerToFetchingStrategyOptions(manager) {
@@ -65245,8 +65245,8 @@ var require_dist10 = __commonJS({
         if (this.#status !== 0) {
           throw new Error("Tried to connect a shard that wasn't idle");
         }
-        const { version: version2, encoding, compression } = this.strategy.options;
-        const params = new import_node_url.URLSearchParams({ v: version2, encoding });
+        const { version: version22, encoding, compression } = this.strategy.options;
+        const params = new import_node_url.URLSearchParams({ v: version22, encoding });
         if (compression) {
           const zlib = await getZlibSync();
           if (zlib) {
@@ -66112,7 +66112,7 @@ var require_dist10 = __commonJS({
         await this.destroy();
       }
     };
-    var version = "1.2.3";
+    var version2 = "1.2.3";
   }
 });
 
@@ -76109,7 +76109,7 @@ var require_main = __commonJS({
     var os = require("os");
     var crypto = require("crypto");
     var packageJson = require_package2();
-    var version = packageJson.version;
+    var version2 = packageJson.version;
     var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
     function parse(src) {
       const obj = {};
@@ -76158,13 +76158,13 @@ var require_main = __commonJS({
       return DotenvModule.parse(decrypted);
     }
     function _warn(message) {
-      console.log(`[dotenv@${version}][WARN] ${message}`);
+      console.log(`[dotenv@${version2}][WARN] ${message}`);
     }
     function _debug(message) {
-      console.log(`[dotenv@${version}][DEBUG] ${message}`);
+      console.log(`[dotenv@${version2}][DEBUG] ${message}`);
     }
     function _log(message) {
-      console.log(`[dotenv@${version}] ${message}`);
+      console.log(`[dotenv@${version2}] ${message}`);
     }
     function _dotenvKey(options) {
       if (options && options.DOTENV_KEY && options.DOTENV_KEY.length > 0) {
@@ -76509,7 +76509,21 @@ var SPECIES = {
   [import_client.PetSpecies.HAMSTER]: { label: "Hamster", icon: "\u{1F439}", variants: ["Syrian", "Robo", "Winter White", "Chinese"] },
   [import_client.PetSpecies.RABBIT]: { label: "Th\u1ECF", icon: "\u{1F430}", variants: ["Dutch", "Angora", "Lop", "Rex"] },
   [import_client.PetSpecies.BIRD]: { label: "Chim", icon: "\u{1F426}", variants: ["V\u1EB9t", "Y\u1EBFn", "B\u1EA1ch y\u1EBFn", "Ch\xEDch ch\xF2e"] },
-  [import_client.PetSpecies.FISH]: { label: "C\xE1", icon: "\u{1F41F}", variants: ["C\xE1 v\xE0ng", "Betta", "Koi", "Neon Tetra"] }
+  [import_client.PetSpecies.FISH]: { label: "C\xE1", icon: "\u{1F41F}", variants: ["C\xE1 v\xE0ng", "Betta", "Koi", "Neon Tetra"] },
+  // v2 — +50 vàng so với phí nhận nuôi thông thường
+  [import_client.PetSpecies.SNAKE]: { label: "R\u1EAFn", icon: "\u{1F40D}", variants: ["Tr\u0103n b\xF3ng", "R\u1EAFn b\u1EAFp c\xE0y", "R\u1EAFn ng\xF4", "R\u1EAFn ho\xE0ng \u0111\u1EBF"] },
+  [import_client.PetSpecies.SPIDER]: { label: "Nh\u1EC7n", icon: "\u{1F577}\uFE0F", variants: ["Tarantula H\u1ED3ng", "Tarantula Xanh", "Nh\u1EC7n \u0110\u1ECF", "Nh\u1EC7n L\xF4ng V\xE0ng"] },
+  [import_client.PetSpecies.RAT]: { label: "Chu\u1ED9t", icon: "\u{1F400}", variants: ["Dumbo", "Fancy", "Rex", "Hairless"] },
+  [import_client.PetSpecies.FERRET]: { label: "Ch\u1ED3n", icon: "\u{1F9A1}", variants: ["Sable", "Albino", "Silver Mitt", "Chocolate"] },
+  // v3 — +100 vàng + yêu cầu lv15
+  [import_client.PetSpecies.UNICORN]: { label: "K\u1EF3 l\xE2n", icon: "\u{1F984}", variants: ["C\u1EA7u v\u1ED3ng", "Ng\xE2n h\xE0", "B\xECnh minh", "Ho\xE0ng h\xF4n", "\u0110\xEAm sao"] }
+};
+var SPECIES_TIER = {
+  [import_client.PetSpecies.SNAKE]: { extraCost: 50, minLevel: 1 },
+  [import_client.PetSpecies.SPIDER]: { extraCost: 50, minLevel: 1 },
+  [import_client.PetSpecies.RAT]: { extraCost: 50, minLevel: 1 },
+  [import_client.PetSpecies.FERRET]: { extraCost: 50, minLevel: 1 },
+  [import_client.PetSpecies.UNICORN]: { extraCost: 100, minLevel: 15 }
 };
 function moodForComfort(comfort) {
   if (comfort <= GAME.comfort.sadMax) return import_client.Mood.SAD;
@@ -76905,7 +76919,12 @@ var SPECIES_PREFIX = {
   [import_client4.PetSpecies.HAMSTER]: "02",
   [import_client4.PetSpecies.RABBIT]: "03",
   [import_client4.PetSpecies.BIRD]: "04",
-  [import_client4.PetSpecies.FISH]: "05"
+  [import_client4.PetSpecies.FISH]: "05",
+  [import_client4.PetSpecies.SNAKE]: "06",
+  [import_client4.PetSpecies.SPIDER]: "07",
+  [import_client4.PetSpecies.RAT]: "08",
+  [import_client4.PetSpecies.FERRET]: "09",
+  [import_client4.PetSpecies.UNICORN]: "10"
 };
 async function totalPetCapacity(userId) {
   const houses = await prisma.userHouse.findMany({ where: { userId } });
@@ -76917,7 +76936,7 @@ async function adoptPet(ownerId, species, name, variant) {
     const user = await tx.user.findUniqueOrThrow({ where: { id: ownerId } });
     const existingName = await tx.pet.findFirst({ where: { ownerId, name } });
     if (existingName) {
-      throw new Error(`B\u1EA1n \u0111\xE3 c\xF3 pet t\xEAn "${name}" r\u1ED3i. H\xE3y ch\u1ECDn t\xEAn kh\xE1c.`);
+      throw new Error(`B\u1EA1n \u0111\xE3 c\xF3 pet t\xEAn \u201C${name}\u201D r\u1ED3i. H\xE3y ch\u1ECDn t\xEAn kh\xE1c.`);
     }
     const petCount = await tx.pet.count({ where: { ownerId } });
     const speciesCount = await tx.pet.count({ where: { ownerId, species } });
@@ -76927,17 +76946,28 @@ async function adoptPet(ownerId, species, name, variant) {
         `Pet c\u1EE7a b\u1EA1n \u0111\xE3 \u0111\u1EA7y (${capacity}/${capacity}). H\xE3y mua th\xEAm ho\u1EB7c n\xE2ng c\u1EA5p nh\xE0 b\u1EB1ng /shop house \u0111\u1EC3 m\u1EDF th\xEAm s\u1EE9c ch\u1EE9a.`
       );
     }
+    const tier = SPECIES_TIER[species];
+    if (tier && user.level < tier.minLevel) {
+      throw new Error(`B\u1EA1n c\u1EA7n \u0111\u1EA1t **Level ${tier.minLevel}** \u0111\u1EC3 nh\u1EADn nu\xF4i lo\xE0i n\xE0y. Level hi\u1EC7n t\u1EA1i c\u1EE7a b\u1EA1n: ${user.level}.`);
+    }
     const feeApplied = petCount >= GAME.adopt.freeAdopts;
+    const tierExtra = tier?.extraCost ?? 0;
+    const totalCost = GAME.adopt.cost + tierExtra;
     if (feeApplied) {
-      if (user.gold < GAME.adopt.cost) {
-        throw new Error(`B\u1EA1n c\u1EA7n ${GAME.adopt.cost} v\xE0ng \u0111\u1EC3 nh\u1EADn pet th\u1EE9 ${petCount + 1}. Hi\u1EC7n c\xF3 ${user.gold} v\xE0ng. Ki\u1EBFm th\xEAm b\u1EB1ng /daily ho\u1EB7c /play.`);
+      if (user.gold < totalCost) {
+        throw new Error(`B\u1EA1n c\u1EA7n ${totalCost} v\xE0ng \u0111\u1EC3 nh\u1EADn pet th\u1EE9 ${petCount + 1}. Hi\u1EC7n c\xF3 ${user.gold} v\xE0ng. Ki\u1EBFm th\xEAm b\u1EB1ng /daily ho\u1EB7c /play.`);
       }
-      await tx.user.update({ where: { id: ownerId }, data: { gold: { decrement: GAME.adopt.cost } } });
+      await tx.user.update({ where: { id: ownerId }, data: { gold: { decrement: totalCost } } });
+    } else if (tierExtra > 0) {
+      if (user.gold < tierExtra) {
+        throw new Error(`B\u1EA1n c\u1EA7n ${tierExtra} v\xE0ng \u0111\u1EC3 nh\u1EADn nu\xF4i lo\xE0i n\xE0y. Hi\u1EC7n c\xF3 ${user.gold} v\xE0ng.`);
+      }
+      await tx.user.update({ where: { id: ownerId }, data: { gold: { decrement: tierExtra } } });
     }
     const seq = String(speciesCount + 1).padStart(3, "0");
     const petCode = `${SPECIES_PREFIX[species]}${seq}`;
     const pet = await tx.pet.create({ data: { ownerId, species, name, variant, petCode } });
-    return { pet, feeApplied };
+    return { pet, feeApplied, tierExtra };
   });
 }
 async function petPet(ownerId, petCode) {
@@ -77209,14 +77239,18 @@ var import_node_fs = require("node:fs");
 var import_node_path = require("node:path");
 var CHANGELOG = [
   {
+    version: "0.3.0",
+    date: "2026-09-10",
+    info: [
+      "\u{1F40D} Th\xEAm lo\xE0i v2 (+50 v\xE0ng): R\u1EAFn, Nh\u1EC7n, Chu\u1ED9t, Ch\u1ED3n \u2014 m\u1EDF kh\xF3a ngay t\u1EEB lv1.",
+      "\u{1F984} Th\xEAm lo\xE0i v3 (+100 v\xE0ng, y\xEAu c\u1EA7u lv15): K\u1EF3 l\xE2n.",
+      "\u{1F4B0} Ph\xED nh\u1EADn nu\xF4i theo tier \u0111\u01B0\u1EE3c hi\u1EC3n th\u1ECB r\xF5 khi /adopt."
+    ]
+  },
+  {
     version: "0.2.0",
     date: "2026-09-10",
     info: [
-      "\u{1F3F7}\uFE0F Lo\u1EA1i: Phi\xEAn b\u1EA3n t\xEDnh n\u0103ng",
-      "\u2699\uFE0F T\u1ED1i \u01B0u n\u1EC1n t\u1EA3ng: tri\u1EC3n khai bundle 1 file, kh\xF4ng c\u1EA7n npm install tr\xEAn host",
-      "\u{1F9E9} Thay \u0111\u1ED5i n\u1EC1n: schema GuildConfig b\u1ED5 sung c\u1ED9t th\xF4ng b\xE1o c\u1EADp nh\u1EADt"
-    ],
-    notes: [
       "\u{1F4E3} Th\xEAm l\u1EC7nh /notify (v\xE0 p!notify) \u2014 \u0111\u0103ng k\xFD k\xEAnh nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt.",
       "\u{1F514} Bot t\u1EF1 g\u1EEDi th\xF4ng b\xE1o c\u1EADp nh\u1EADt phi\xEAn b\u1EA3n m\u1EDBi \u0111\u1EBFn k\xEAnh \u0111\xE3 \u0111\u0103ng k\xFD."
     ]
@@ -77230,8 +77264,8 @@ function currentVersion() {
     return "0.0.0";
   }
 }
-function changelogFor(version) {
-  return CHANGELOG.find((entry) => entry.version === version) ?? null;
+function changelogFor(version2) {
+  return CHANGELOG.find((entry) => entry.version === version2) ?? null;
 }
 
 // src/services/announcement.service.ts
@@ -77260,19 +77294,16 @@ async function setNotificationChannel(guildId, channelId) {
   });
 }
 function buildAnnouncementEmbed(entry) {
-  const embed = new import_discord4.EmbedBuilder().setColor(8112495).setTitle(`\u{1F4E2} Pet Haven \u2014 C\u1EADp nh\u1EADt v${entry.version}`).setDescription(entry.notes.map((note) => `\u2022 ${note}`).join("\n")).setFooter({ text: `Ng\xE0y ph\xE1t h\xE0nh: ${entry.date}` });
-  if (entry.info.length > 0) {
-    embed.addFields({ name: "\u{1F4CA} Th\xF4ng tin b\u1EA3n c\u1EADp nh\u1EADt", value: entry.info.join("\n"), inline: false });
-  }
+  const embed = new import_discord4.EmbedBuilder().setColor(8112495).setTitle(`\u{1F4E2} Pet Haven \u2014 C\u1EADp nh\u1EADt v${entry.version}`).setDescription(entry.info.map((line) => `\u2022 ${line}`).join("\n")).setFooter({ text: `Ng\xE0y ph\xE1t h\xE0nh: ${entry.date}` });
   return embed;
 }
 async function sendLatestUpdateToGuild(client2, guildId) {
-  const version = currentVersion();
-  const entry = changelogFor(version);
+  const version2 = currentVersion();
+  const entry = changelogFor(version2);
   if (!entry) return false;
   const config = await prisma.guildConfig.findUnique({ where: { guildId } });
   const channelId = config?.announcementChannelId;
-  if (!channelId || config.lastAnnouncedVersion === version) return false;
+  if (!channelId || config.lastAnnouncedVersion === version2) return false;
   const channel = await client2.channels.fetch(channelId).catch(() => null);
   if (!channel || !channel.isTextBased() || channel.isDMBased()) return false;
   try {
@@ -77280,7 +77311,7 @@ async function sendLatestUpdateToGuild(client2, guildId) {
   } catch {
     return false;
   }
-  await prisma.guildConfig.update({ where: { guildId }, data: { lastAnnouncedVersion: version } });
+  await prisma.guildConfig.update({ where: { guildId }, data: { lastAnnouncedVersion: version2 } });
   return true;
 }
 async function broadcastUpdateNotifications(client2) {
@@ -77317,6 +77348,8 @@ async function handleCommand(interaction) {
       return setprefix(interaction);
     case "notify":
       return notify(interaction);
+    case "version":
+      return version(interaction);
     case "play":
       return play(interaction);
     case "help":
@@ -77384,12 +77417,19 @@ async function adopt(interaction) {
   const option = SPECIES[species];
   const variant = option.variants[Math.floor(Math.random() * option.variants.length)];
   const petCount = await prisma.pet.count({ where: { ownerId: player.id } });
-  const feeNote = petCount >= GAME.adopt.freeAdopts ? ` (ph\xED ${GAME.adopt.cost} v\xE0ng)` : " (mi\u1EC5n ph\xED)";
-  const { pet, feeApplied } = await adoptPet(player.id, species, name, variant);
-  const feeMsg = feeApplied ? `
-\u{1FA99} \u0110\xE3 tr\u1EEB ${GAME.adopt.cost} v\xE0ng ph\xED nh\u1EADn nu\xF4i.` : "";
+  const { pet, feeApplied, tierExtra } = await adoptPet(player.id, species, name, variant);
+  const baseCost = feeApplied ? GAME.adopt.cost : 0;
+  const totalCost = baseCost + (feeApplied ? tierExtra : tierExtra);
+  const costParts = [];
+  if (feeApplied) costParts.push(`${GAME.adopt.cost} v\xE0ng ph\xED nh\u1EADn nu\xF4i`);
+  if (tierExtra > 0) costParts.push(`${tierExtra} v\xE0ng ph\xED lo\xE0i \u0111\u1EB7c bi\u1EC7t`);
+  const feeMsg = costParts.length > 0 ? `
+\u{1FA99} \u0110\xE3 tr\u1EEB ${costParts.join(" + ")}.` : "";
+  const freeNote = !feeApplied && tierExtra === 0 ? " (mi\u1EC5n ph\xED)" : "";
+  void pet;
+  void petCount;
   await interaction.editReply(
-    `\u2728 B\u1EA1n \u0111\xE3 nh\u1EADn **${name}** \u2014 ${option.icon} ${option.label} gi\u1ED1ng **${variant}**${feeNote}${feeMsg}
+    `\u2728 B\u1EA1n \u0111\xE3 nh\u1EADn **${name}** \u2014 ${option.icon} ${option.label} gi\u1ED1ng **${variant}**${freeNote}${feeMsg}
 D\xF9ng /feed ho\u1EB7c /petting \u0111\u1EC3 ch\u0103m s\xF3c pet c\u1EE7a b\u1EA1n.`
   );
 }
@@ -77620,6 +77660,14 @@ function isTextChannelType(type) {
     import_discord5.ChannelType.GuildForum
   ].includes(type);
 }
+function buildVersionEmbed() {
+  const current = currentVersion();
+  const latest = CHANGELOG[0];
+  return new import_discord5.EmbedBuilder().setColor(8112495).setTitle(`\u2139\uFE0F Pet Haven \u2014 Phi\xEAn b\u1EA3n v${current}`).setDescription(latest ? latest.info.map((line) => `\u2022 ${line}`).join("\n") : "Kh\xF4ng c\xF3 ghi ch\xFA m\u1EDBi.").setFooter({ text: latest ? `B\u1EA3n c\u1EADp nh\u1EADt m\u1EDBi nh\u1EA5t: v${latest.version} (${latest.date})` : "" });
+}
+async function version(interaction) {
+  await interaction.reply({ embeds: [buildVersionEmbed()] });
+}
 async function play(interaction) {
   await ensurePlayer(interaction.user.id);
   const gameOption = interaction.options.getString("game", true);
@@ -77656,7 +77704,8 @@ async function help(interaction) {
     "`/start` \u2014 t\u1EA1o h\u1ED3 s\u01A1 n\u1EBFu ch\u01B0a c\xF3",
     "",
     "**Server**",
-    "`/notify #k\xEAnh` \u2014 \u0111\u0103ng k\xFD nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt (g\xF5 /notify \u0111\u1EC3 t\u1EAFt)"
+    "`/notify #k\xEAnh` \u2014 \u0111\u0103ng k\xFD nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt (g\xF5 /notify \u0111\u1EC3 t\u1EAFt)",
+    "`/version` \u2014 xem phi\xEAn b\u1EA3n hi\u1EC7n t\u1EA1i v\xE0 ghi ch\xFA m\u1EDBi nh\u1EA5t"
   ].join("\n");
   await interaction.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(5793266).setTitle("\u{1F43E} Pet Haven \u2014 H\u01B0\u1EDBng d\u1EABn").setDescription(description)] });
 }
@@ -77868,6 +77917,8 @@ async function route(message, command, args) {
       return pSetPrefix(message, args);
     case "notify":
       return pNotify(message, args);
+    case "version":
+      return pVersion(message);
     default:
       await message.reply(`Kh\xF4ng nh\u1EADn ra l\u1EC7nh \`${command}\`. G\xF5 \`${"p!"}help\` \u0111\u1EC3 xem danh s\xE1ch l\u1EC7nh.`);
   }
@@ -77875,6 +77926,12 @@ async function route(message, command, args) {
 async function pStart(message) {
   await message.reply(`\u{1F43E} B\u1EA1n \u0111\xE3 s\u1EB5n s\xE0ng ch\u01A1i! Nh\u1EADn qu\xE0 kh\u1EDFi \u0111\u1EA7u xong r\u1ED3i.
 D\xF9ng **p!adopt** \u0111\u1EC3 nh\u1EADn pet \u0111\u1EA7u ti\xEAn (2 pet \u0111\u1EA7u mi\u1EC5n ph\xED). Xem h\u01B0\u1EDBng d\u1EABn: **p!help**.`);
+}
+async function pVersion(message) {
+  const current = currentVersion();
+  const latest = CHANGELOG[0];
+  const embed = new import_discord6.EmbedBuilder().setColor(8112495).setTitle(`\u2139\uFE0F Pet Haven \u2014 Phi\xEAn b\u1EA3n v${current}`).setDescription(latest ? latest.info.map((line) => `\u2022 ${line}`).join("\n") : "Kh\xF4ng c\xF3 ghi ch\xFA m\u1EDBi.").setFooter({ text: latest ? `B\u1EA3n c\u1EADp nh\u1EADt m\u1EDBi nh\u1EA5t: v${latest.version} (${latest.date})` : "" });
+  await message.reply({ embeds: [embed] });
 }
 async function pHelp(message, args) {
   const category = args[0]?.toLowerCase();
@@ -77907,6 +77964,7 @@ function helpAll() {
     "**Kh\xE1c**",
     "`p!leaderboard` \u2014 b\u1EA3ng x\u1EBFp h\u1EA1ng",
     "`p!notify [#k\xEAnh|off]` \u2014 b\u1EADt/t\u1EAFt k\xEAnh nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt",
+    "`p!version` \u2014 xem phi\xEAn b\u1EA3n hi\u1EC7n t\u1EA1i v\xE0 ghi ch\xFA m\u1EDBi nh\u1EA5t",
     "`p!help <pet|kinh|game>` \u2014 h\u01B0\u1EDBng d\u1EABn theo danh m\u1EE5c"
   ].join("\n");
 }
@@ -77924,22 +77982,24 @@ async function pAdopt(message, userId, args) {
   const speciesRaw = args[0]?.toUpperCase();
   const name = args.slice(1).join(" ").trim();
   if (!speciesRaw || !name) {
-    await message.reply("C\xE1ch d\xF9ng: `p!adopt <lo\xE0i> <t\xEAn>` \u2014 lo\xE0i: DOG, CAT, HAMSTER, RABBIT, BIRD, FISH. V\xED d\u1EE5: `p!adopt rabbit Th\u1ECF Con`");
+    await message.reply("C\xE1ch d\xF9ng: `p!adopt <lo\xE0i> <t\xEAn>` \u2014 lo\xE0i: dog, cat, hamster, rabbit, bird, fish, snake, spider, rat, ferret, unicorn. V\xED d\u1EE5: `p!adopt rabbit Th\u1ECF Con`");
     return;
   }
   const species = normalizeSpecies(speciesRaw);
   if (!species) {
-    await message.reply("Lo\xE0i kh\xF4ng h\u1EE3p l\u1EC7. Ch\u1ECDn: dog, cat, hamster, rabbit, bird, fish.");
+    await message.reply("Lo\xE0i kh\xF4ng h\u1EE3p l\u1EC7. Ch\u1ECDn: dog, cat, hamster, rabbit, bird, fish, snake, spider, rat, ferret, unicorn.");
     return;
   }
   const option = SPECIES[species];
   const variant = option.variants[Math.floor(Math.random() * option.variants.length)];
-  const petCount = await prisma.pet.count({ where: { ownerId: userId } });
-  const feeNote = petCount >= GAME.adopt.freeAdopts ? ` (ph\xED ${GAME.adopt.cost} v\xE0ng)` : " (mi\u1EC5n ph\xED)";
-  const { feeApplied } = await adoptPet(userId, species, name, variant);
-  const feeMsg = feeApplied ? `
-\u{1FA99} \u0110\xE3 tr\u1EEB ${GAME.adopt.cost} v\xE0ng ph\xED nh\u1EADn nu\xF4i.` : "";
-  await privateReply(message, `\u2728 B\u1EA1n \u0111\xE3 nh\u1EADn **${name}** \u2014 ${option.icon} ${option.label} gi\u1ED1ng ${variant}${feeNote}${feeMsg}
+  const { feeApplied, tierExtra } = await adoptPet(userId, species, name, variant);
+  const costParts = [];
+  if (feeApplied) costParts.push(`${GAME.adopt.cost} v\xE0ng ph\xED nh\u1EADn nu\xF4i`);
+  if (tierExtra > 0) costParts.push(`${tierExtra} v\xE0ng ph\xED lo\xE0i \u0111\u1EB7c bi\u1EC7t`);
+  const feeMsg = costParts.length > 0 ? `
+\u{1FA99} \u0110\xE3 tr\u1EEB ${costParts.join(" + ")}.` : "";
+  const freeNote = !feeApplied && tierExtra === 0 ? " (mi\u1EC5n ph\xED)" : "";
+  await privateReply(message, `\u2728 B\u1EA1n \u0111\xE3 nh\u1EADn **${name}** \u2014 ${option.icon} ${option.label} gi\u1ED1ng ${variant}${freeNote}${feeMsg}
 D\xF9ng **p!feed ${name} <m\xE3 th\u1EE9c \u0103n>** \u0111\u1EC3 cho \u0103n!`);
 }
 function normalizeSpecies(raw) {
@@ -77958,7 +78018,17 @@ function normalizeSpecies(raw) {
     CHIM: import_client5.PetSpecies.BIRD,
     FISH: import_client5.PetSpecies.FISH,
     CA: import_client5.PetSpecies.FISH,
-    FISHES: import_client5.PetSpecies.FISH
+    FISHES: import_client5.PetSpecies.FISH,
+    SNAKE: import_client5.PetSpecies.SNAKE,
+    RAN: import_client5.PetSpecies.SNAKE,
+    SPIDER: import_client5.PetSpecies.SPIDER,
+    NHEN: import_client5.PetSpecies.SPIDER,
+    RAT: import_client5.PetSpecies.RAT,
+    CHUOT: import_client5.PetSpecies.RAT,
+    FERRET: import_client5.PetSpecies.FERRET,
+    CHON: import_client5.PetSpecies.FERRET,
+    UNICORN: import_client5.PetSpecies.UNICORN,
+    KYLAN: import_client5.PetSpecies.UNICORN
   };
   return aliases[raw] ?? null;
 }

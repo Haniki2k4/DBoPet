@@ -76450,7 +76450,12 @@ var commands = [
     { name: "\u{1F439} Hamster", value: "HAMSTER" },
     { name: "\u{1F430} Th\u1ECF", value: "RABBIT" },
     { name: "\u{1F426} Chim", value: "BIRD" },
-    { name: "\u{1F41F} C\xE1", value: "FISH" }
+    { name: "\u{1F41F} C\xE1", value: "FISH" },
+    { name: "\u{1F40D} R\u1EAFn", value: "SNAKE" },
+    { name: "\u{1F577}\uFE0F Nh\u1EC7n", value: "SPIDER" },
+    { name: "\u{1F400} Chu\u1ED9t", value: "RAT" },
+    { name: "\u{1F9A1} Ch\u1ED3n", value: "FERRET" },
+    { name: "\u{1F984} K\u1EF3 l\xE2n", value: "UNICORN" }
   )).addStringOption((option) => option.setName("name").setDescription("T\xEAn pet").setRequired(true).setMaxLength(24)),
   new import_discord.SlashCommandBuilder().setName("profile").setDescription("Xem level, EXP v\xE0 v\xE0ng"),
   new import_discord.SlashCommandBuilder().setName("daily").setDescription("Nh\u1EADn th\u01B0\u1EDFng \u0111i\u1EC3m danh h\u1EB1ng ng\xE0y (streak t\u0103ng bonus)"),
@@ -76466,6 +76471,7 @@ var commands = [
     { name: "\u2B55 XO (Caro)", value: "xo" },
     { name: "\u{1F4A3} D\xF2 m\xECn", value: "mine" }
   )),
+  new import_discord.SlashCommandBuilder().setName("version").setDescription("Xem phi\xEAn b\u1EA3n hi\u1EC7n t\u1EA1i v\xE0 ghi ch\xFA c\u1EADp nh\u1EADt m\u1EDBi nh\u1EA5t"),
   new import_discord.SlashCommandBuilder().setName("help").setDescription("Xem danh s\xE1ch l\u1EC7nh"),
   new import_discord.SlashCommandBuilder().setName("leaderboard").setDescription("B\u1EA3ng x\u1EBFp h\u1EA1ng ng\u01B0\u1EDDi ch\u01A1i")
 ].map((command) => command.toJSON());

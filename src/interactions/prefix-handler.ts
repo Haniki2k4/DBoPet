@@ -10,6 +10,7 @@ import { buyFood, buyHouse } from "../services/shop.service.js";
 import { claimDaily } from "../services/daily.service.js";
 import { setPrefix } from "../services/guild.service.js";
 import { getNotificationChannel, setNotificationChannel, sendLatestUpdateToGuild } from "../services/announcement.service.js";
+import { CHANGELOG, currentVersion } from "../config/release.js";
 import { prisma } from "../database/prisma.js";
 
 export function parsePrefixCommand(content: string, prefix: string): { args: string[] } | null {
@@ -52,6 +53,7 @@ async function route(message: Message, command: string, args: string[]): Promise
     case "leaderboard": return pLeaderboard(message);
     case "setprefix": return pSetPrefix(message, args);
     case "notify": return pNotify(message, args);
+    case "version": return pVersion(message);
     default:
       await message.reply(`Không nhận ra lệnh \`${command}\`. Gõ \`${"p!"}help\` để xem danh sách lệnh.`);
   }
@@ -59,6 +61,17 @@ async function route(message: Message, command: string, args: string[]): Promise
 
 async function pStart(message: Message): Promise<void> {
   await message.reply(`🐾 Bạn đã sẵn sàng chơi! Nhận quà khởi đầu xong rồi.\nDùng **p!adopt** để nhận pet đầu tiên (2 pet đầu miễn phí). Xem hướng dẫn: **p!help**.`);
+}
+
+async function pVersion(message: Message): Promise<void> {
+  const current = currentVersion();
+  const latest = CHANGELOG[0];
+  const embed = new EmbedBuilder()
+    .setColor(0x7BC96F)
+    .setTitle(`ℹ️ Pet Haven — Phiên bản v${current}`)
+    .setDescription(latest ? latest.info.map((line) => `• ${line}`).join("\n") : "Không có ghi chú mới.")
+    .setFooter({ text: latest ? `Bản cập nhật mới nhất: v${latest.version} (${latest.date})` : "" });
+  await message.reply({ embeds: [embed] });
 }
 
 async function pHelp(message: Message, args: string[]): Promise<void> {
@@ -94,6 +107,7 @@ function helpAll(): string {
     "**Khác**",
     "`p!leaderboard` — bảng xếp hạng",
     "`p!notify [#kênh|off]` — bật/tắt kênh nhận thông báo cập nhật",
+    "`p!version` — xem phiên bản hiện tại và ghi chú mới nhất",
     "`p!help <pet|kinh|game>` — hướng dẫn theo danh mục",
   ].join("\n");
 }

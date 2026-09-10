@@ -52,6 +52,7 @@ export const commands = [
       { name: "⭕ XO (Caro)", value: "xo" },
       { name: "💣 Dò mìn", value: "mine" }
     )),
+  new SlashCommandBuilder().setName("version").setDescription("Xem phiên bản hiện tại và ghi chú cập nhật mới nhất"),
   new SlashCommandBuilder().setName("help").setDescription("Xem danh sách lệnh"),
   new SlashCommandBuilder().setName("leaderboard").setDescription("Bảng xếp hạng người chơi")
 ].map((command) => command.toJSON());
