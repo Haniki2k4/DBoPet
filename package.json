@@ -1,6 +1,6 @@
 {
   "name": "discord-pet-haven",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "description": "A Discord virtual pet bot",
   "type": "module",
