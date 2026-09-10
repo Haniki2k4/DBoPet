@@ -8006,7 +8006,7 @@ var require_client = __commonJS({
     function getPipelining(client2) {
       return client2[kPipelining] ?? client2[kHTTPContext]?.defaultPipelining ?? 1;
     }
-    var Client3 = class extends DispatcherBase {
+    var Client4 = class extends DispatcherBase {
       /**
        *
        * @param {string|URL} url
@@ -8435,7 +8435,7 @@ var require_client = __commonJS({
         }
       }
     }
-    module2.exports = Client3;
+    module2.exports = Client4;
   }
 });
 
@@ -8694,7 +8694,7 @@ var require_pool = __commonJS({
       kAddClient,
       kGetDispatcher
     } = require_pool_base();
-    var Client3 = require_client();
+    var Client4 = require_client();
     var {
       InvalidArgumentError
     } = require_errors();
@@ -8705,7 +8705,7 @@ var require_pool = __commonJS({
     var kConnections = /* @__PURE__ */ Symbol("connections");
     var kFactory = /* @__PURE__ */ Symbol("factory");
     function defaultFactory(origin, opts) {
-      return new Client3(origin, opts);
+      return new Client4(origin, opts);
     }
     var Pool = class extends PoolBase {
       constructor(origin, {
@@ -8926,7 +8926,7 @@ var require_agent = __commonJS({
     var { kClients, kRunning, kClose, kDestroy, kDispatch, kInterceptors } = require_symbols();
     var DispatcherBase = require_dispatcher_base();
     var Pool = require_pool();
-    var Client3 = require_client();
+    var Client4 = require_client();
     var util = require_util();
     var createRedirectInterceptor = require_redirect_interceptor();
     var kOnConnect = /* @__PURE__ */ Symbol("onConnect");
@@ -8937,7 +8937,7 @@ var require_agent = __commonJS({
     var kFactory = /* @__PURE__ */ Symbol("factory");
     var kOptions = /* @__PURE__ */ Symbol("options");
     function defaultFactory(origin, opts) {
-      return opts && opts.connections === 1 ? new Client3(origin, opts) : new Pool(origin, opts);
+      return opts && opts.connections === 1 ? new Client4(origin, opts) : new Pool(origin, opts);
     }
     var Agent = class extends DispatcherBase {
       constructor({ factory = defaultFactory, maxRedirections = 0, connect, ...options } = {}) {
@@ -9026,7 +9026,7 @@ var require_proxy_agent = __commonJS({
     var DispatcherBase = require_dispatcher_base();
     var { InvalidArgumentError, RequestAbortedError, SecureProxyConnectionError } = require_errors();
     var buildConnector = require_connect();
-    var Client3 = require_client();
+    var Client4 = require_client();
     var kAgent = /* @__PURE__ */ Symbol("proxy agent");
     var kClient = /* @__PURE__ */ Symbol("proxy client");
     var kProxyHeaders = /* @__PURE__ */ Symbol("proxy headers");
@@ -9044,7 +9044,7 @@ var require_proxy_agent = __commonJS({
     };
     function defaultAgentFactory(origin, opts) {
       if (opts.connections === 1) {
-        return new Client3(origin, opts);
+        return new Client4(origin, opts);
       }
       return new Pool(origin, opts);
     }
@@ -9059,7 +9059,7 @@ var require_proxy_agent = __commonJS({
         if (factory) {
           this.#client = factory(proxyUrl, { connect });
         } else {
-          this.#client = new Client3(proxyUrl, { connect });
+          this.#client = new Client4(proxyUrl, { connect });
         }
       }
       [kDispatch](opts, handler) {
@@ -11409,7 +11409,7 @@ var require_mock_client = __commonJS({
   "node_modules/undici/lib/mock/mock-client.js"(exports2, module2) {
     "use strict";
     var { promisify } = require("node:util");
-    var Client3 = require_client();
+    var Client4 = require_client();
     var { buildMockDispatch } = require_mock_utils();
     var {
       kDispatches,
@@ -11423,7 +11423,7 @@ var require_mock_client = __commonJS({
     var { MockInterceptor } = require_mock_interceptor();
     var Symbols = require_symbols();
     var { InvalidArgumentError } = require_errors();
-    var MockClient = class extends Client3 {
+    var MockClient = class extends Client4 {
       constructor(origin, opts) {
         super(origin, opts);
         if (!opts || !opts.agent || typeof opts.agent.dispatch !== "function") {
@@ -19119,7 +19119,7 @@ var require_eventsource = __commonJS({
 var require_undici = __commonJS({
   "node_modules/undici/index.js"(exports2, module2) {
     "use strict";
-    var Client3 = require_client();
+    var Client4 = require_client();
     var Dispatcher = require_dispatcher();
     var Pool = require_pool();
     var BalancedPool = require_balanced_pool();
@@ -19143,7 +19143,7 @@ var require_undici = __commonJS({
     var createRedirectInterceptor = require_redirect_interceptor();
     Object.assign(Dispatcher.prototype, api);
     module2.exports.Dispatcher = Dispatcher;
-    module2.exports.Client = Client3;
+    module2.exports.Client = Client4;
     module2.exports.Pool = Pool;
     module2.exports.BalancedPool = BalancedPool;
     module2.exports.Agent = Agent;
@@ -20021,26 +20021,26 @@ var require_channel = __commonJS({
       ForumLayoutType2[ForumLayoutType2["ListView"] = 1] = "ListView";
       ForumLayoutType2[ForumLayoutType2["GalleryView"] = 2] = "GalleryView";
     })(ForumLayoutType || (exports2.ForumLayoutType = ForumLayoutType = {}));
-    var ChannelType;
-    (function(ChannelType2) {
-      ChannelType2[ChannelType2["GuildText"] = 0] = "GuildText";
-      ChannelType2[ChannelType2["DM"] = 1] = "DM";
-      ChannelType2[ChannelType2["GuildVoice"] = 2] = "GuildVoice";
-      ChannelType2[ChannelType2["GroupDM"] = 3] = "GroupDM";
-      ChannelType2[ChannelType2["GuildCategory"] = 4] = "GuildCategory";
-      ChannelType2[ChannelType2["GuildAnnouncement"] = 5] = "GuildAnnouncement";
-      ChannelType2[ChannelType2["AnnouncementThread"] = 10] = "AnnouncementThread";
-      ChannelType2[ChannelType2["PublicThread"] = 11] = "PublicThread";
-      ChannelType2[ChannelType2["PrivateThread"] = 12] = "PrivateThread";
-      ChannelType2[ChannelType2["GuildStageVoice"] = 13] = "GuildStageVoice";
-      ChannelType2[ChannelType2["GuildDirectory"] = 14] = "GuildDirectory";
-      ChannelType2[ChannelType2["GuildForum"] = 15] = "GuildForum";
-      ChannelType2[ChannelType2["GuildMedia"] = 16] = "GuildMedia";
-      ChannelType2[ChannelType2["GuildNews"] = 5] = "GuildNews";
-      ChannelType2[ChannelType2["GuildNewsThread"] = 10] = "GuildNewsThread";
-      ChannelType2[ChannelType2["GuildPublicThread"] = 11] = "GuildPublicThread";
-      ChannelType2[ChannelType2["GuildPrivateThread"] = 12] = "GuildPrivateThread";
-    })(ChannelType || (exports2.ChannelType = ChannelType = {}));
+    var ChannelType2;
+    (function(ChannelType3) {
+      ChannelType3[ChannelType3["GuildText"] = 0] = "GuildText";
+      ChannelType3[ChannelType3["DM"] = 1] = "DM";
+      ChannelType3[ChannelType3["GuildVoice"] = 2] = "GuildVoice";
+      ChannelType3[ChannelType3["GroupDM"] = 3] = "GroupDM";
+      ChannelType3[ChannelType3["GuildCategory"] = 4] = "GuildCategory";
+      ChannelType3[ChannelType3["GuildAnnouncement"] = 5] = "GuildAnnouncement";
+      ChannelType3[ChannelType3["AnnouncementThread"] = 10] = "AnnouncementThread";
+      ChannelType3[ChannelType3["PublicThread"] = 11] = "PublicThread";
+      ChannelType3[ChannelType3["PrivateThread"] = 12] = "PrivateThread";
+      ChannelType3[ChannelType3["GuildStageVoice"] = 13] = "GuildStageVoice";
+      ChannelType3[ChannelType3["GuildDirectory"] = 14] = "GuildDirectory";
+      ChannelType3[ChannelType3["GuildForum"] = 15] = "GuildForum";
+      ChannelType3[ChannelType3["GuildMedia"] = 16] = "GuildMedia";
+      ChannelType3[ChannelType3["GuildNews"] = 5] = "GuildNews";
+      ChannelType3[ChannelType3["GuildNewsThread"] = 10] = "GuildNewsThread";
+      ChannelType3[ChannelType3["GuildPublicThread"] = 11] = "GuildPublicThread";
+      ChannelType3[ChannelType3["GuildPrivateThread"] = 12] = "GuildPrivateThread";
+    })(ChannelType2 || (exports2.ChannelType = ChannelType2 = {}));
     var VideoQualityMode;
     (function(VideoQualityMode2) {
       VideoQualityMode2[VideoQualityMode2["Auto"] = 1] = "Auto";
@@ -31595,7 +31595,7 @@ var require_ChannelFlagsBitField = __commonJS({
 var require_Constants = __commonJS({
   "node_modules/discord.js/src/util/Constants.js"(exports2) {
     "use strict";
-    var { ChannelType, MessageType, ComponentType, ImageFormat, StickerFormatType } = require_v106();
+    var { ChannelType: ChannelType2, MessageType, ComponentType, ImageFormat, StickerFormatType } = require_v106();
     exports2.MaxBulkDeletableMessageAge = 12096e5;
     exports2.SweeperKeys = [
       "autoModerationRules",
@@ -31622,18 +31622,18 @@ var require_Constants = __commonJS({
       MessageType.ContextMenuCommand
     ];
     exports2.GuildTextBasedChannelTypes = [
-      ChannelType.GuildText,
-      ChannelType.GuildAnnouncement,
-      ChannelType.AnnouncementThread,
-      ChannelType.PublicThread,
-      ChannelType.PrivateThread,
-      ChannelType.GuildVoice,
-      ChannelType.GuildStageVoice
+      ChannelType2.GuildText,
+      ChannelType2.GuildAnnouncement,
+      ChannelType2.AnnouncementThread,
+      ChannelType2.PublicThread,
+      ChannelType2.PrivateThread,
+      ChannelType2.GuildVoice,
+      ChannelType2.GuildStageVoice
     ];
-    exports2.TextBasedChannelTypes = [...exports2.GuildTextBasedChannelTypes, ChannelType.DM, ChannelType.GroupDM];
-    exports2.SendableChannels = [...exports2.GuildTextBasedChannelTypes, ChannelType.DM];
-    exports2.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
-    exports2.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
+    exports2.TextBasedChannelTypes = [...exports2.GuildTextBasedChannelTypes, ChannelType2.DM, ChannelType2.GroupDM];
+    exports2.SendableChannels = [...exports2.GuildTextBasedChannelTypes, ChannelType2.DM];
+    exports2.ThreadChannelTypes = [ChannelType2.AnnouncementThread, ChannelType2.PublicThread, ChannelType2.PrivateThread];
+    exports2.VoiceBasedChannelTypes = [ChannelType2.GuildVoice, ChannelType2.GuildStageVoice];
     exports2.SelectMenuTypes = [
       ComponentType.StringSelect,
       ComponentType.UserSelect,
@@ -31692,7 +31692,7 @@ var require_BaseChannel = __commonJS({
     "use strict";
     var { channelLink, channelMention } = require_dist7();
     var { DiscordSnowflake } = require_cjs();
-    var { ChannelType, Routes: Routes2 } = require_v106();
+    var { ChannelType: ChannelType2, Routes: Routes2 } = require_v106();
     var Base = require_Base();
     var ChannelFlagsBitField = require_ChannelFlagsBitField();
     var { ThreadChannelTypes } = require_Constants();
@@ -31793,7 +31793,7 @@ var require_BaseChannel = __commonJS({
        * @returns {boolean}
        */
       isDMBased() {
-        return [ChannelType.DM, ChannelType.GroupDM].includes(this.type);
+        return [ChannelType2.DM, ChannelType2.GroupDM].includes(this.type);
       }
       /**
        * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
@@ -32738,7 +32738,7 @@ var require_GuildChannel = __commonJS({
   "node_modules/discord.js/src/structures/GuildChannel.js"(exports2, module2) {
     "use strict";
     var { Snowflake } = require_cjs();
-    var { PermissionFlagsBits: PermissionFlagsBits2, ChannelType } = require_v106();
+    var { PermissionFlagsBits: PermissionFlagsBits2, ChannelType: ChannelType2 } = require_v106();
     var { BaseChannel } = require_BaseChannel();
     var { DiscordjsError: DiscordjsError2, ErrorCodes: ErrorCodes2 } = require_errors2();
     var PermissionOverwriteManager = require_PermissionOverwriteManager();
@@ -32816,7 +32816,7 @@ var require_GuildChannel = __commonJS({
        * @readonly
        */
       get position() {
-        const selfIsCategory = this.type === ChannelType.GuildCategory;
+        const selfIsCategory = this.type === ChannelType2.GuildCategory;
         const types = getSortableGroupTypes(this.type);
         let count = 0;
         for (const channel of this.guild.channels.cache.values()) {
@@ -33136,7 +33136,7 @@ var require_Util = __commonJS({
     var { parse } = require("node:path");
     var process2 = require("node:process");
     var { Collection: Collection2 } = require_dist6();
-    var { ChannelType, RouteBases, Routes: Routes2 } = require_v106();
+    var { ChannelType: ChannelType2, RouteBases, Routes: Routes2 } = require_v106();
     var { fetch: fetch2 } = require_undici();
     var Colors = require_Colors();
     var { DiscordjsError: DiscordjsError2, DiscordjsRangeError: DiscordjsRangeError2, DiscordjsTypeError: DiscordjsTypeError2, ErrorCodes: ErrorCodes2 } = require_errors2();
@@ -33205,24 +33205,24 @@ var require_Util = __commonJS({
       };
     }
     var TextSortableGroupTypes = [
-      ChannelType.GuildText,
-      ChannelType.GuildAnnouncement,
-      ChannelType.GuildForum,
-      ChannelType.GuildMedia
+      ChannelType2.GuildText,
+      ChannelType2.GuildAnnouncement,
+      ChannelType2.GuildForum,
+      ChannelType2.GuildMedia
     ];
-    var VoiceSortableGroupTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
-    var CategorySortableGroupTypes = [ChannelType.GuildCategory];
+    var VoiceSortableGroupTypes = [ChannelType2.GuildVoice, ChannelType2.GuildStageVoice];
+    var CategorySortableGroupTypes = [ChannelType2.GuildCategory];
     function getSortableGroupTypes(type) {
       switch (type) {
-        case ChannelType.GuildText:
-        case ChannelType.GuildAnnouncement:
-        case ChannelType.GuildForum:
-        case ChannelType.GuildMedia:
+        case ChannelType2.GuildText:
+        case ChannelType2.GuildAnnouncement:
+        case ChannelType2.GuildForum:
+        case ChannelType2.GuildMedia:
           return TextSortableGroupTypes;
-        case ChannelType.GuildVoice:
-        case ChannelType.GuildStageVoice:
+        case ChannelType2.GuildVoice:
+        case ChannelType2.GuildStageVoice:
           return VoiceSortableGroupTypes;
-        case ChannelType.GuildCategory:
+        case ChannelType2.GuildCategory:
           return CategorySortableGroupTypes;
         default:
           return [type];
@@ -33297,7 +33297,7 @@ var require_Util = __commonJS({
               return user ? `@${user.displayName}` : match;
             }
             case "@&": {
-              if (channel.type === ChannelType.DM) return match;
+              if (channel.type === ChannelType2.DM) return match;
               const role = channel.guild.roles.cache.get(id);
               return role ? `@${role.name}` : match;
             }
@@ -42939,7 +42939,7 @@ var require_dist8 = __commonJS({
       ContextMenuCommandAssertions: () => Assertions_exports11,
       ContextMenuCommandBuilder: () => ContextMenuCommandBuilder,
       EmbedAssertions: () => Assertions_exports,
-      EmbedBuilder: () => EmbedBuilder3,
+      EmbedBuilder: () => EmbedBuilder4,
       FileBuilder: () => FileBuilder,
       FileUploadAssertions: () => Assertions_exports4,
       FileUploadBuilder: () => FileUploadBuilder,
@@ -43068,7 +43068,7 @@ var require_dist8 = __commonJS({
       return arr;
     }
     __name(normalizeArray, "normalizeArray");
-    var EmbedBuilder3 = class {
+    var EmbedBuilder4 = class {
       static {
         __name(this, "EmbedBuilder");
       }
@@ -49693,7 +49693,7 @@ var require_Message = __commonJS({
     var { DiscordSnowflake } = require_cjs();
     var {
       InteractionType,
-      ChannelType,
+      ChannelType: ChannelType2,
       MessageType,
       MessageFlags: MessageFlags3,
       PermissionFlagsBits: PermissionFlagsBits2,
@@ -50222,7 +50222,7 @@ var require_Message = __commonJS({
         const bitfield = PermissionFlagsBits2.SendMessages | (this.author.id === this.client.user.id ? PermissionsBitField2.DefaultBit : PermissionFlagsBits2.ManageMessages);
         const { channel } = this;
         return Boolean(
-          channel?.type === ChannelType.GuildAnnouncement && !this.flags.has(MessageFlags3.Crossposted) && this.reference?.type !== MessageReferenceType.Forward && this.type === MessageType.Default && !this.poll && channel.viewable && channel.permissionsFor(this.client.user)?.has(bitfield, false)
+          channel?.type === ChannelType2.GuildAnnouncement && !this.flags.has(MessageFlags3.Crossposted) && this.reference?.type !== MessageReferenceType.Forward && this.type === MessageType.Default && !this.poll && channel.viewable && channel.permissionsFor(this.client.user)?.has(bitfield, false)
         );
       }
       /**
@@ -50391,7 +50391,7 @@ var require_Message = __commonJS({
        */
       async startThread(options = {}) {
         if (!this.channel) throw new DiscordjsError2(ErrorCodes2.ChannelNotCached);
-        if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
+        if (![ChannelType2.GuildText, ChannelType2.GuildAnnouncement].includes(this.channel.type)) {
           throw new DiscordjsError2(ErrorCodes2.MessageThreadParent);
         }
         if (this.hasThread) throw new DiscordjsError2(ErrorCodes2.MessageExistingThread);
@@ -50979,7 +50979,7 @@ var require_WebhookClient = __commonJS({
 var require_VoiceState = __commonJS({
   "node_modules/discord.js/src/structures/VoiceState.js"(exports2, module2) {
     "use strict";
-    var { ChannelType, Routes: Routes2 } = require_v106();
+    var { ChannelType: ChannelType2, Routes: Routes2 } = require_v106();
     var Base = require_Base();
     var { DiscordjsError: DiscordjsError2, DiscordjsTypeError: DiscordjsTypeError2, ErrorCodes: ErrorCodes2 } = require_errors2();
     var VoiceState = class extends Base {
@@ -51123,7 +51123,7 @@ var require_VoiceState = __commonJS({
        * @returns {Promise<VoiceState>}
        */
       async edit(options) {
-        if (this.channel?.type !== ChannelType.GuildStageVoice) throw new DiscordjsError2(ErrorCodes2.VoiceNotStageChannel);
+        if (this.channel?.type !== ChannelType2.GuildStageVoice) throw new DiscordjsError2(ErrorCodes2.VoiceNotStageChannel);
         const target = this.client.user.id === this.id ? "@me" : this.id;
         if (target !== "@me" && options.requestToSpeak !== void 0) {
           throw new DiscordjsError2(ErrorCodes2.VoiceStateNotOwn);
@@ -53480,7 +53480,7 @@ var require_Partials = __commonJS({
 var require_Action = __commonJS({
   "node_modules/discord.js/src/client/actions/Action.js"(exports2, module2) {
     "use strict";
-    var { ChannelType } = require_v106();
+    var { ChannelType: ChannelType2 } = require_v106();
     var { Poll } = require_Poll();
     var { PollAnswer } = require_PollAnswer();
     var Partials = require_Partials();
@@ -53502,7 +53502,7 @@ var require_Action = __commonJS({
           if (!data.recipients.some((existingRecipient) => recipient.id === existingRecipient.id)) {
             payloadData.recipients = [...data.recipients, recipient];
           }
-        } else if (data.type === ChannelType.DM || data.type === ChannelType.GroupDM) {
+        } else if (data.type === ChannelType2.DM || data.type === ChannelType2.GroupDM) {
           const recipient = data.author ?? data.user ?? { id: data.user_id };
           payloadData.recipients = [recipient];
         }
@@ -53928,7 +53928,7 @@ var require_DMChannel = __commonJS({
   "node_modules/discord.js/src/structures/DMChannel.js"(exports2, module2) {
     "use strict";
     var { userMention } = require_dist7();
-    var { ChannelType } = require_v106();
+    var { ChannelType: ChannelType2 } = require_v106();
     var { BaseChannel } = require_BaseChannel();
     var TextBasedChannel = require_TextBasedChannel();
     var DMMessageManager = require_DMMessageManager();
@@ -53936,7 +53936,7 @@ var require_DMChannel = __commonJS({
     var DMChannel = class extends BaseChannel {
       constructor(client2, data) {
         super(client2, data);
-        this.type = ChannelType.DM;
+        this.type = ChannelType2.DM;
         this.messages = new DMMessageManager(this);
       }
       _patch(data) {
@@ -54558,7 +54558,7 @@ var require_ThreadChannel = __commonJS({
     "use strict";
     var { DiscordAPIError } = require_dist5();
     var { lazy } = require_dist();
-    var { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits: PermissionFlagsBits2, Routes: Routes2 } = require_v106();
+    var { RESTJSONErrorCodes, ChannelFlags, ChannelType: ChannelType2, PermissionFlagsBits: PermissionFlagsBits2, Routes: Routes2 } = require_v106();
     var { BaseChannel } = require_BaseChannel();
     var getThreadOnlyChannel = lazy(() => require_ThreadOnlyChannel());
     var TextBasedChannel = require_TextBasedChannel();
@@ -54592,7 +54592,7 @@ var require_ThreadChannel = __commonJS({
         }
         if ("thread_metadata" in data) {
           this.locked = data.thread_metadata.locked ?? false;
-          this.invitable = this.type === ChannelType.PrivateThread ? data.thread_metadata.invitable ?? false : null;
+          this.invitable = this.type === ChannelType2.PrivateThread ? data.thread_metadata.invitable ?? false : null;
           this.archived = data.thread_metadata.archived;
           this.autoArchiveDuration = data.thread_metadata.auto_archive_duration;
           this.archiveTimestamp = Date.parse(data.thread_metadata.archive_timestamp);
@@ -54606,7 +54606,7 @@ var require_ThreadChannel = __commonJS({
           this.archiveTimestamp ??= null;
           this.invitable ??= null;
         }
-        this._createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
+        this._createdTimestamp ??= this.type === ChannelType2.PrivateThread ? super.createdTimestamp : null;
         if ("last_message_id" in data) {
           this.lastMessageId = data.last_message_id;
         } else {
@@ -54779,7 +54779,7 @@ var require_ThreadChannel = __commonJS({
             auto_archive_duration: options.autoArchiveDuration,
             rate_limit_per_user: options.rateLimitPerUser,
             locked: options.locked,
-            invitable: this.type === ChannelType.PrivateThread ? options.invitable : void 0,
+            invitable: this.type === ChannelType2.PrivateThread ? options.invitable : void 0,
             applied_tags: options.appliedTags,
             flags: "flags" in options ? ChannelFlagsBitField.resolve(options.flags) : void 0
           },
@@ -54826,7 +54826,7 @@ var require_ThreadChannel = __commonJS({
        * @returns {Promise<ThreadChannel>}
        */
       async setInvitable(invitable = true, reason) {
-        if (this.type !== ChannelType.PrivateThread) {
+        if (this.type !== ChannelType2.PrivateThread) {
           throw new DiscordjsRangeError2(ErrorCodes2.ThreadInvitableType, this.type);
         }
         return this.edit({ invitable, reason });
@@ -54909,7 +54909,7 @@ var require_ThreadChannel = __commonJS({
        * @readonly
        */
       get editable() {
-        return this.ownerId === this.client.user.id && (this.type !== ChannelType.PrivateThread || this.joined) || this.manageable;
+        return this.ownerId === this.client.user.id && (this.type !== ChannelType2.PrivateThread || this.joined) || this.manageable;
       }
       /**
        * Whether the thread is joinable by the client user
@@ -54918,7 +54918,7 @@ var require_ThreadChannel = __commonJS({
        */
       get joinable() {
         return !this.archived && !this.joined && this.permissionsFor(this.client.user)?.has(
-          this.type === ChannelType.PrivateThread ? PermissionFlagsBits2.ManageThreads : PermissionFlagsBits2.ViewChannel,
+          this.type === ChannelType2.PrivateThread ? PermissionFlagsBits2.ManageThreads : PermissionFlagsBits2.ViewChannel,
           false
         );
       }
@@ -54953,7 +54953,7 @@ var require_ThreadChannel = __commonJS({
         const permissions = this.permissionsFor(this.client.user);
         if (!permissions) return false;
         if (permissions.has(PermissionFlagsBits2.Administrator, false)) return true;
-        return !(this.archived && this.locked && !this.manageable) && (this.type !== ChannelType.PrivateThread || this.joined || this.manageable) && permissions.has(PermissionFlagsBits2.SendMessagesInThreads, false) && this.guild.members.me.communicationDisabledUntilTimestamp < Date.now();
+        return !(this.archived && this.locked && !this.manageable) && (this.type !== ChannelType2.PrivateThread || this.joined || this.manageable) && permissions.has(PermissionFlagsBits2.SendMessagesInThreads, false) && this.guild.members.me.communicationDisabledUntilTimestamp < Date.now();
       }
       /**
        * Whether the thread is unarchivable by the client user
@@ -55176,7 +55176,7 @@ var require_ThreadManager = __commonJS({
 var require_GuildTextThreadManager = __commonJS({
   "node_modules/discord.js/src/managers/GuildTextThreadManager.js"(exports2, module2) {
     "use strict";
-    var { ChannelType, Routes: Routes2 } = require_v106();
+    var { ChannelType: ChannelType2, Routes: Routes2 } = require_v106();
     var ThreadManager = require_ThreadManager();
     var { DiscordjsTypeError: DiscordjsTypeError2, ErrorCodes: ErrorCodes2 } = require_errors2();
     var GuildTextThreadManager = class extends ThreadManager {
@@ -55232,12 +55232,12 @@ var require_GuildTextThreadManager = __commonJS({
         reason,
         rateLimitPerUser
       } = {}) {
-        let resolvedType = this.channel.type === ChannelType.GuildAnnouncement ? ChannelType.AnnouncementThread : ChannelType.PublicThread;
+        let resolvedType = this.channel.type === ChannelType2.GuildAnnouncement ? ChannelType2.AnnouncementThread : ChannelType2.PublicThread;
         let startMessageId;
         if (startMessage) {
           startMessageId = this.channel.messages.resolveId(startMessage);
           if (!startMessageId) throw new DiscordjsTypeError2(ErrorCodes2.InvalidType, "startMessage", "MessageResolvable");
-        } else if (this.channel.type !== ChannelType.GuildAnnouncement) {
+        } else if (this.channel.type !== ChannelType2.GuildAnnouncement) {
           resolvedType = type ?? resolvedType;
         }
         const data = await this.client.rest.post(Routes2.threads(this.channel.id, startMessageId), {
@@ -55245,7 +55245,7 @@ var require_GuildTextThreadManager = __commonJS({
             name,
             auto_archive_duration: autoArchiveDuration,
             type: resolvedType,
-            invitable: resolvedType === ChannelType.PrivateThread ? invitable : void 0,
+            invitable: resolvedType === ChannelType2.PrivateThread ? invitable : void 0,
             rate_limit_per_user: rateLimitPerUser
           },
           reason
@@ -55909,7 +55909,7 @@ var require_Channels = __commonJS({
   "node_modules/discord.js/src/util/Channels.js"(exports2, module2) {
     "use strict";
     var { lazy } = require_dist();
-    var { ChannelType } = require_v106();
+    var { ChannelType: ChannelType2 } = require_v106();
     var getCategoryChannel = lazy(() => require_CategoryChannel());
     var getDMChannel = lazy(() => require_DMChannel());
     var getNewsChannel = lazy(() => require_NewsChannel());
@@ -55924,49 +55924,49 @@ var require_Channels = __commonJS({
     function createChannel(client2, data, guild, { allowUnknownGuild } = {}) {
       let channel;
       if (!data.guild_id && !guild) {
-        if (data.recipients && data.type !== ChannelType.GroupDM || data.type === ChannelType.DM) {
+        if (data.recipients && data.type !== ChannelType2.GroupDM || data.type === ChannelType2.DM) {
           channel = new (getDMChannel())(client2, data);
-        } else if (data.type === ChannelType.GroupDM) {
+        } else if (data.type === ChannelType2.GroupDM) {
           channel = new (getPartialGroupDMChannel())(client2, data);
         }
       } else {
         guild ??= client2.guilds.cache.get(data.guild_id);
         if (guild || allowUnknownGuild) {
           switch (data.type) {
-            case ChannelType.GuildText: {
+            case ChannelType2.GuildText: {
               channel = new (getTextChannel())(guild, data, client2);
               break;
             }
-            case ChannelType.GuildVoice: {
+            case ChannelType2.GuildVoice: {
               channel = new (getVoiceChannel())(guild, data, client2);
               break;
             }
-            case ChannelType.GuildCategory: {
+            case ChannelType2.GuildCategory: {
               channel = new (getCategoryChannel())(guild, data, client2);
               break;
             }
-            case ChannelType.GuildAnnouncement: {
+            case ChannelType2.GuildAnnouncement: {
               channel = new (getNewsChannel())(guild, data, client2);
               break;
             }
-            case ChannelType.GuildStageVoice: {
+            case ChannelType2.GuildStageVoice: {
               channel = new (getStageChannel())(guild, data, client2);
               break;
             }
-            case ChannelType.AnnouncementThread:
-            case ChannelType.PublicThread:
-            case ChannelType.PrivateThread: {
+            case ChannelType2.AnnouncementThread:
+            case ChannelType2.PublicThread:
+            case ChannelType2.PrivateThread: {
               channel = new (getThreadChannel())(guild, data, client2);
               if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
               break;
             }
-            case ChannelType.GuildDirectory:
+            case ChannelType2.GuildDirectory:
               channel = new (getDirectoryChannel())(guild, data, client2);
               break;
-            case ChannelType.GuildForum:
+            case ChannelType2.GuildForum:
               channel = new (getForumChannel())(guild, data, client2);
               break;
-            case ChannelType.GuildMedia:
+            case ChannelType2.GuildMedia:
               channel = new (getMediaChannel())(guild, data, client2);
               break;
           }
@@ -64721,7 +64721,7 @@ var require_dist10 = __commonJS({
     var import_node_worker_threads2 = require("worker_threads");
     var import_collection2 = require_dist9();
     var import_node_events = require("events");
-    var import_node_path = require("path");
+    var import_node_path2 = require("path");
     var import_node_worker_threads = require("worker_threads");
     var import_collection = require_dist9();
     var WorkerSendPayloadOp = /* @__PURE__ */ ((WorkerSendPayloadOp2) => {
@@ -64874,18 +64874,18 @@ var require_dist10 = __commonJS({
       resolveWorkerPath() {
         const path = this.options.workerPath;
         if (!path) {
-          return (0, import_node_path.join)(__dirname, "defaultWorker.js");
+          return (0, import_node_path2.join)(__dirname, "defaultWorker.js");
         }
-        if ((0, import_node_path.isAbsolute)(path)) {
+        if ((0, import_node_path2.isAbsolute)(path)) {
           return path;
         }
         if (/^\.\.?[/\\]/.test(path)) {
-          return (0, import_node_path.resolve)(path);
+          return (0, import_node_path2.resolve)(path);
         }
         try {
           return require.resolve(path);
         } catch {
-          return (0, import_node_path.resolve)(path);
+          return (0, import_node_path2.resolve)(path);
         }
       }
       async waitForWorkerReady(worker) {
@@ -68894,7 +68894,7 @@ var require_GuildChannelManager = __commonJS({
     "use strict";
     var process2 = require("node:process");
     var { Collection: Collection2 } = require_dist6();
-    var { ChannelType, Routes: Routes2 } = require_v106();
+    var { ChannelType: ChannelType2, Routes: Routes2 } = require_v106();
     var CachedManager = require_CachedManager();
     var GuildTextThreadManager = require_GuildTextThreadManager();
     var { DiscordjsError: DiscordjsError2, DiscordjsTypeError: DiscordjsTypeError2, ErrorCodes: ErrorCodes2 } = require_errors2();
@@ -69157,7 +69157,7 @@ var require_GuildChannelManager = __commonJS({
         if (options.lockPermissions) {
           if (parentId) {
             const newParent = this.cache.get(parentId);
-            if (newParent?.type === ChannelType.GuildCategory) {
+            if (newParent?.type === ChannelType2.GuildCategory) {
               permission_overwrites = newParent.permissionOverwrites.cache.map(
                 (overwrite) => PermissionOverwrites.resolve(overwrite, this.guild)
               );
@@ -71857,7 +71857,7 @@ var require_Guild = __commonJS({
     var { Collection: Collection2 } = require_dist6();
     var { makeURLSearchParams: makeURLSearchParams2 } = require_dist5();
     var { DiscordSnowflake } = require_cjs();
-    var { ChannelType, GuildPremiumTier, Routes: Routes2, GuildFeature } = require_v106();
+    var { ChannelType: ChannelType2, GuildPremiumTier, Routes: Routes2, GuildFeature } = require_v106();
     var AnonymousGuild = require_AnonymousGuild();
     var GuildAuditLogs = require_GuildAuditLogs();
     var { GuildOnboarding } = require_GuildOnboarding();
@@ -72993,7 +72993,7 @@ var require_Guild = __commonJS({
        * @private
        */
       _sortedChannels(channel) {
-        const channelIsCategory = channel.type === ChannelType.GuildCategory;
+        const channelIsCategory = channel.type === ChannelType2.GuildCategory;
         const types = getSortableGroupTypes(channel.type);
         return discordSort(
           this.channels.cache.filter(
@@ -73375,7 +73375,7 @@ var require_GuildManager = __commonJS({
 var require_UserManager = __commonJS({
   "node_modules/discord.js/src/managers/UserManager.js"(exports2, module2) {
     "use strict";
-    var { ChannelType, Routes: Routes2 } = require_v106();
+    var { ChannelType: ChannelType2, Routes: Routes2 } = require_v106();
     var CachedManager = require_CachedManager();
     var { DiscordjsError: DiscordjsError2, ErrorCodes: ErrorCodes2 } = require_errors2();
     var { GuildMember } = require_GuildMember();
@@ -73410,7 +73410,7 @@ var require_UserManager = __commonJS({
       dmChannel(userId) {
         const expectedRecipientIds = [userId, this.client.user.id];
         return this.client.channels.cache.find(
-          (channel) => channel.type === ChannelType.DM && channel.recipientId === userId && channel.recipientIds.every((id) => expectedRecipientIds.includes(id))
+          (channel) => channel.type === ChannelType2.DM && channel.recipientId === userId && channel.recipientIds.every((id) => expectedRecipientIds.includes(id))
         ) ?? null;
       }
       /**
@@ -75470,7 +75470,7 @@ var require_EmbedBuilder = __commonJS({
     var { isJSONEncodable } = require_dist();
     var { toSnakeCase } = require_Transformers();
     var { resolveColor } = require_Util();
-    var EmbedBuilder3 = class extends BuildersEmbed {
+    var EmbedBuilder4 = class extends BuildersEmbed {
       constructor(data) {
         super(toSnakeCase(data));
       }
@@ -75499,7 +75499,7 @@ var require_EmbedBuilder = __commonJS({
         return embedLength(this.data);
       }
     };
-    module2.exports = EmbedBuilder3;
+    module2.exports = EmbedBuilder4;
   }
 });
 
@@ -76438,7 +76438,7 @@ var require_cli_options = __commonJS({
 });
 
 // src/index.ts
-var import_discord6 = __toESM(require_src(), 1);
+var import_discord7 = __toESM(require_src(), 1);
 
 // node_modules/dotenv/config.js
 (function() {
@@ -76466,7 +76466,7 @@ var env = {
 };
 
 // src/interactions/command-handler.ts
-var import_discord4 = __toESM(require_src(), 1);
+var import_discord5 = __toESM(require_src(), 1);
 var import_node_crypto = require("node:crypto");
 
 // src/config/game.ts
@@ -76915,6 +76915,10 @@ async function totalPetCapacity(userId) {
 async function adoptPet(ownerId, species, name, variant) {
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({ where: { id: ownerId } });
+    const existingName = await tx.pet.findFirst({ where: { ownerId, name } });
+    if (existingName) {
+      throw new Error(`B\u1EA1n \u0111\xE3 c\xF3 pet t\xEAn "${name}" r\u1ED3i. H\xE3y ch\u1ECDn t\xEAn kh\xE1c.`);
+    }
     const petCount = await tx.pet.count({ where: { ownerId } });
     const speciesCount = await tx.pet.count({ where: { ownerId, species } });
     const capacity = await totalPetCapacity(ownerId);
@@ -76950,7 +76954,7 @@ async function petPet(ownerId, petCode) {
         ]
       }
     });
-    if (!pet) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y pet c\xF3 m\xE3 "${petCode}". H\xE3y d\xF9ng /pets \u0111\u1EC3 xem danh s\xE1ch pet c\u1EE7a b\u1EA1n.`);
+    if (!pet) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y pet "${petCode}". H\xE3y d\xF9ng /pets \u0111\u1EC3 xem danh s\xE1ch pet c\u1EE7a b\u1EA1n.`);
     const now = /* @__PURE__ */ new Date();
     const shouldReset = isNewVnDay(pet.lastPetResetAt, now);
     const dailyPetCount = shouldReset ? 0 : pet.dailyPetCount;
@@ -76980,9 +76984,9 @@ async function feedPet(ownerId, petCode, foodId) {
         ]
       }
     });
-    if (!pet) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y pet c\xF3 m\xE3 "${petCode}". H\xE3y d\xF9ng /pets \u0111\u1EC3 xem danh s\xE1ch pet c\u1EE7a b\u1EA1n.`);
+    if (!pet) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y pet "${petCode}". H\xE3y d\xF9ng /pets \u0111\u1EC3 xem danh s\xE1ch pet c\u1EE7a b\u1EA1n.`);
     const food = await tx.food.findUnique({ where: { id: foodId } });
-    if (!food) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y m\xF3n \u0103n c\xF3 m\xE3 "${foodId}". H\xE3y d\xF9ng /shop food \u0111\u1EC3 xem danh m\u1EE5c.`);
+    if (!food) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y m\xF3n \u0103n "${foodId}". H\xE3y d\xF9ng /shop food \u0111\u1EC3 xem danh m\u1EE5c.`);
     const inventory2 = await tx.userInventory.findUnique({ where: { userId_foodId: { userId: ownerId, foodId } } });
     if (!inventory2 || inventory2.quantity < 1) throw new Error(`B\u1EA1n kh\xF4ng c\xF2n ${food.name}. H\xE3y d\xF9ng /shop food \u0111\u1EC3 mua th\xEAm.`);
     const preferred = food.preferredBy === pet.species;
@@ -76998,14 +77002,73 @@ async function feedPet(ownerId, petCode, foodId) {
     return { petName: pet.name, foodName: food.name, userExperience, petExperience };
   });
 }
+async function feedPetList(ownerId, petIdentifiers, foodId) {
+  const food = await prisma.food.findUnique({ where: { id: foodId } });
+  if (!food) throw new Error(`Kh\xF4ng t\xECm th\u1EA5y m\xF3n \u0103n "${foodId}". H\xE3y d\xF9ng /shop food \u0111\u1EC3 xem danh m\u1EE5c.`);
+  let pets2;
+  if (petIdentifiers.length === 1 && petIdentifiers[0] === "all") {
+    pets2 = await prisma.pet.findMany({ where: { ownerId }, orderBy: { createdAt: "asc" } });
+  } else {
+    const resolved = await Promise.all(
+      petIdentifiers.map((id) => {
+        const clean = resolvePetCode(id);
+        return prisma.pet.findFirst({
+          where: { ownerId, OR: [{ name: clean }, { petCode: clean }] }
+        });
+      })
+    );
+    pets2 = resolved.filter((p) => p !== null);
+  }
+  const summary = { foodName: food.name, fed: [], skipped: [], totalUserExperience: 0 };
+  for (const pet of pets2) {
+    const inv = await prisma.userInventory.findUnique({ where: { userId_foodId: { userId: ownerId, foodId } } });
+    if (!inv || inv.quantity < 1) {
+      summary.skipped.push({ petName: pet.name, reason: "H\u1EBFt th\u1EE9c \u0103n trong kho" });
+      continue;
+    }
+    try {
+      const result = await feedPet(ownerId, pet.petCode, foodId);
+      summary.fed.push({ petName: result.petName, petExperience: result.petExperience });
+      summary.totalUserExperience += result.userExperience;
+    } catch (err) {
+      summary.skipped.push({ petName: pet.name, reason: err instanceof Error ? err.message : "L\u1ED7i kh\xF4ng x\xE1c \u0111\u1ECBnh" });
+    }
+  }
+  return summary;
+}
+async function petPetList(ownerId, petIdentifiers) {
+  let pets2;
+  if (petIdentifiers.length === 1 && petIdentifiers[0] === "all") {
+    pets2 = await prisma.pet.findMany({ where: { ownerId }, orderBy: { createdAt: "asc" } });
+  } else {
+    const resolved = await Promise.all(
+      petIdentifiers.map((id) => {
+        const clean = resolvePetCode(id);
+        return prisma.pet.findFirst({
+          where: { ownerId, OR: [{ name: clean }, { petCode: clean }] }
+        });
+      })
+    );
+    pets2 = resolved.filter((p) => p !== null);
+  }
+  const summary = { petting: [], skipped: [] };
+  for (const pet of pets2) {
+    try {
+      const result = await petPet(ownerId, pet.petCode);
+      summary.petting.push({ petName: result.petName, affection: result.affection, remaining: result.remaining });
+    } catch (err) {
+      summary.skipped.push({ petName: pet.name, reason: err instanceof Error ? err.message : "L\u1ED7i kh\xF4ng x\xE1c \u0111\u1ECBnh" });
+    }
+  }
+  return summary;
+}
 async function applyNeglect() {
-  const DAY_MS3 = 24 * 60 * 60 * 1e3;
   const pets2 = await prisma.pet.findMany({ include: { owner: true } });
   const now = Date.now();
   let changed = 0;
   for (const pet of pets2) {
     const lastCare = Math.max(pet.lastFedAt?.getTime() ?? pet.createdAt.getTime(), pet.lastPettedAt?.getTime() ?? pet.createdAt.getTime());
-    const days = Math.floor((now - lastCare) / DAY_MS3);
+    const days = Math.floor((now - lastCare) / DAY_MS);
     if (days < GAME.neglect.daysBeforePenalty) continue;
     const comfort = Math.max(GAME.comfort.min, pet.comfort - GAME.neglect.comfortPenaltyPerDay);
     await prisma.pet.update({ where: { id: pet.id }, data: { comfort, mood: moodForComfort(comfort) } });
@@ -77138,6 +77201,95 @@ async function setPrefix(guildId, prefix) {
   return config.prefix;
 }
 
+// src/services/announcement.service.ts
+var import_discord4 = __toESM(require_src(), 1);
+
+// src/config/release.ts
+var import_node_fs = require("node:fs");
+var import_node_path = require("node:path");
+var CHANGELOG = [
+  {
+    version: "0.2.0",
+    date: "2026-09-10",
+    info: [
+      "\u{1F3F7}\uFE0F Lo\u1EA1i: Phi\xEAn b\u1EA3n t\xEDnh n\u0103ng",
+      "\u2699\uFE0F T\u1ED1i \u01B0u n\u1EC1n t\u1EA3ng: tri\u1EC3n khai bundle 1 file, kh\xF4ng c\u1EA7n npm install tr\xEAn host",
+      "\u{1F9E9} Thay \u0111\u1ED5i n\u1EC1n: schema GuildConfig b\u1ED5 sung c\u1ED9t th\xF4ng b\xE1o c\u1EADp nh\u1EADt"
+    ],
+    notes: [
+      "\u{1F4E3} Th\xEAm l\u1EC7nh /notify (v\xE0 p!notify) \u2014 \u0111\u0103ng k\xFD k\xEAnh nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt.",
+      "\u{1F514} Bot t\u1EF1 g\u1EEDi th\xF4ng b\xE1o c\u1EADp nh\u1EADt phi\xEAn b\u1EA3n m\u1EDBi \u0111\u1EBFn k\xEAnh \u0111\xE3 \u0111\u0103ng k\xFD."
+    ]
+  }
+];
+function currentVersion() {
+  try {
+    const pkg = JSON.parse((0, import_node_fs.readFileSync)((0, import_node_path.join)(process.cwd(), "package.json"), "utf8"));
+    return pkg.version ?? "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+}
+function changelogFor(version) {
+  return CHANGELOG.find((entry) => entry.version === version) ?? null;
+}
+
+// src/services/announcement.service.ts
+async function ensureAnnouncementColumns() {
+  const fields = await prisma.$queryRawUnsafe('PRAGMA table_info("GuildConfig")');
+  const names = fields.map((field) => field.name);
+  if (!names.includes("announcementChannelId")) {
+    await prisma.$executeRawUnsafe('ALTER TABLE "GuildConfig" ADD COLUMN "announcementChannelId" TEXT');
+  }
+  if (!names.includes("lastAnnouncedVersion")) {
+    await prisma.$executeRawUnsafe('ALTER TABLE "GuildConfig" ADD COLUMN "lastAnnouncedVersion" TEXT');
+  }
+}
+async function getNotificationChannel(guildId) {
+  const config = await prisma.guildConfig.findUnique({
+    where: { guildId },
+    select: { announcementChannelId: true }
+  });
+  return config?.announcementChannelId ?? null;
+}
+async function setNotificationChannel(guildId, channelId) {
+  await prisma.guildConfig.upsert({
+    where: { guildId },
+    update: { announcementChannelId: channelId },
+    create: { guildId, announcementChannelId: channelId }
+  });
+}
+function buildAnnouncementEmbed(entry) {
+  const embed = new import_discord4.EmbedBuilder().setColor(8112495).setTitle(`\u{1F4E2} Pet Haven \u2014 C\u1EADp nh\u1EADt v${entry.version}`).setDescription(entry.notes.map((note) => `\u2022 ${note}`).join("\n")).setFooter({ text: `Ng\xE0y ph\xE1t h\xE0nh: ${entry.date}` });
+  if (entry.info.length > 0) {
+    embed.addFields({ name: "\u{1F4CA} Th\xF4ng tin b\u1EA3n c\u1EADp nh\u1EADt", value: entry.info.join("\n"), inline: false });
+  }
+  return embed;
+}
+async function sendLatestUpdateToGuild(client2, guildId) {
+  const version = currentVersion();
+  const entry = changelogFor(version);
+  if (!entry) return false;
+  const config = await prisma.guildConfig.findUnique({ where: { guildId } });
+  const channelId = config?.announcementChannelId;
+  if (!channelId || config.lastAnnouncedVersion === version) return false;
+  const channel = await client2.channels.fetch(channelId).catch(() => null);
+  if (!channel || !channel.isTextBased() || channel.isDMBased()) return false;
+  try {
+    await channel.send({ embeds: [buildAnnouncementEmbed(entry)] });
+  } catch {
+    return false;
+  }
+  await prisma.guildConfig.update({ where: { guildId }, data: { lastAnnouncedVersion: version } });
+  return true;
+}
+async function broadcastUpdateNotifications(client2) {
+  const configs = await prisma.guildConfig.findMany({ where: { announcementChannelId: { not: null } } });
+  for (const config of configs) {
+    await sendLatestUpdateToGuild(client2, config.guildId);
+  }
+}
+
 // src/interactions/command-handler.ts
 async function handleCommand(interaction) {
   switch (interaction.commandName) {
@@ -77163,6 +77315,8 @@ async function handleCommand(interaction) {
       return house(interaction);
     case "setprefix":
       return setprefix(interaction);
+    case "notify":
+      return notify(interaction);
     case "play":
       return play(interaction);
     case "help":
@@ -77181,7 +77335,7 @@ async function start(interaction) {
     await interaction.editReply("B\u1EA1n \u0111\xE3 c\xF3 h\u1ED3 s\u01A1 r\u1ED3i. D\xF9ng /adopt \u0111\u1EC3 nh\u1EADn pet ho\u1EB7c /profile \u0111\u1EC3 xem ti\u1EBFn tr\xECnh.");
     return;
   }
-  const guide = new import_discord4.EmbedBuilder().setColor(8112495).setTitle("\u{1F43E} Ch\xE0o m\u1EEBng \u0111\u1EBFn Pet Haven!").setDescription(
+  const guide = new import_discord5.EmbedBuilder().setColor(8112495).setTitle("\u{1F43E} Ch\xE0o m\u1EEBng \u0111\u1EBFn Pet Haven!").setDescription(
     `\u{1F381} B\u1EA1n nh\u1EADn **${GAME.starterGold} v\xE0ng** v\xE0 **${GAME.starterFoodQuantity} ph\u1EA7n H\u1EA1t c\u01A1 b\u1EA3n** \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u!
 
 D\u01B0\u1EDBi \u0111\xE2y l\xE0 h\u01B0\u1EDBng d\u1EABn nhanh \u0111\u1EC3 ch\u01A1i:`
@@ -77248,7 +77402,7 @@ async function profile(interaction) {
   const capacity = await totalPetCapacity(player.id);
   const slots = houseSlotCount(player.level);
   const ownedHouses = await prisma.userHouse.count({ where: { userId: player.id } });
-  const embed = new import_discord4.EmbedBuilder().setColor(16038210).setTitle(`H\u1ED3 s\u01A1 c\u1EE7a ${interaction.user.username}`).addFields(
+  const embed = new import_discord5.EmbedBuilder().setColor(16038210).setTitle(`H\u1ED3 s\u01A1 c\u1EE7a ${interaction.user.username}`).addFields(
     { name: "Level ch\u1EE7", value: `${full.level} (${full.experience}/${full.level * GAME.baseExperiencePerLevel} EXP)`, inline: true },
     { name: "V\xE0ng", value: `\u{1FA99} ${full.gold}`, inline: true },
     { name: "T\u1ED5ng pet", value: `\u{1F43E} ${full.pets.length} pet`, inline: true },
@@ -77271,7 +77425,7 @@ async function daily(interaction) {
 \u2728 +${result.experience} EXP`);
 }
 async function pets(interaction) {
-  await interaction.deferReply({ flags: import_discord4.MessageFlags.Ephemeral });
+  await interaction.deferReply({ flags: import_discord5.MessageFlags.Ephemeral });
   await ensurePlayer(interaction.user.id);
   const player = await getPlayer(interaction.user.id);
   if (!player || player.pets.length === 0) {
@@ -77282,24 +77436,46 @@ async function pets(interaction) {
     const species = SPECIES[pet.species];
     return `${species.icon} **${pet.name}** \xB7 ${pet.variant}
 Lv.${pet.level} \xB7 ${pet.experience}/${pet.level * GAME.baseExperiencePerLevel} EXP \xB7 bonus +${petExperienceBonus(pet.level)}% EXP
-${moodLabel(pet.mood)} \xB7 comfort ${pet.comfort}/100 \xB7 y\xEAu th\xEDch ${pet.affection}
-M\xE3: \`${pet.petCode}\``;
+${moodLabel(pet.mood)} \xB7 comfort ${pet.comfort}/100 \xB7 y\xEAu th\xEDch ${pet.affection}`;
   }).join("\n\n");
-  await interaction.editReply({ embeds: [new import_discord4.EmbedBuilder().setColor(8112495).setTitle("C\xE1c pet c\u1EE7a b\u1EA1n").setDescription(description)] });
+  await interaction.editReply({ embeds: [new import_discord5.EmbedBuilder().setColor(8112495).setTitle("C\xE1c pet c\u1EE7a b\u1EA1n").setDescription(description)] });
 }
 async function feed(interaction) {
   await interaction.deferReply();
   const player = await ensurePlayer(interaction.user.id);
-  const petCode = interaction.options.getString("pet", true);
+  const petInput = interaction.options.getString("pet", true);
   const foodId = interaction.options.getString("food", true);
-  const result = await feedPet(player.id, petCode, foodId);
+  const isBatch = petInput === "all" || petInput.includes(",");
+  if (isBatch) {
+    const identifiers = petInput === "all" ? ["all"] : petInput.split(",").map((s) => s.trim()).filter(Boolean);
+    const summary = await feedPetList(player.id, identifiers, foodId);
+    const fedLines = summary.fed.map((r) => `\u2705 **${r.petName}** +${r.petExperience} EXP`).join("\n") || "Kh\xF4ng c\xF3 pet n\xE0o \u0111\u01B0\u1EE3c cho \u0103n.";
+    const skipLines = summary.skipped.map((r) => `\u26A0\uFE0F **${r.petName}** \u2014 ${r.reason}`).join("\n");
+    const embed = new import_discord5.EmbedBuilder().setColor(8112495).setTitle(`\u{1F37D}\uFE0F Cho \u0103n h\xE0ng lo\u1EA1t \u2014 ${summary.foodName}`).addFields({ name: `\u0110\xE3 cho \u0103n (${summary.fed.length} pet)`, value: fedLines, inline: false });
+    if (skipLines) embed.addFields({ name: `B\u1ECF qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+    if (summary.totalUserExperience > 0) embed.setFooter({ text: `+${summary.totalUserExperience} EXP cho ${interaction.user.username}` });
+    await interaction.editReply({ embeds: [embed] });
+    return;
+  }
+  const result = await feedPet(player.id, petInput, foodId);
   await interaction.editReply(`\u{1F37D}\uFE0F ${interaction.user.username} \u0111\xE3 cho **${result.petName}** \u0103n **${result.foodName}**! +${result.userExperience} EXP cho ${interaction.user.username}, +${result.petExperience} EXP cho ${result.petName}.`);
 }
 async function petting(interaction) {
   await interaction.deferReply();
   const player = await ensurePlayer(interaction.user.id);
-  const petCode = interaction.options.getString("pet", true);
-  const result = await petPet(player.id, petCode);
+  const petInput = interaction.options.getString("pet", true);
+  const isBatch = petInput === "all" || petInput.includes(",");
+  if (isBatch) {
+    const identifiers = petInput === "all" ? ["all"] : petInput.split(",").map((s) => s.trim()).filter(Boolean);
+    const summary = await petPetList(player.id, identifiers);
+    const pettingLines = summary.petting.map((r) => `\u{1F496} **${r.petName}** y\xEAu th\xEDch: ${r.affection} (c\xF2n ${r.remaining} l\u01B0\u1EE3t)`).join("\n") || "Kh\xF4ng c\xF3 pet n\xE0o \u0111\u01B0\u1EE3c \xE2u y\u1EBFm.";
+    const skipLines = summary.skipped.map((r) => `\u26A0\uFE0F **${r.petName}** \u2014 ${r.reason}`).join("\n");
+    const embed = new import_discord5.EmbedBuilder().setColor(16361688).setTitle(`\u{1F496} \xC2u y\u1EBFm h\xE0ng lo\u1EA1t`).addFields({ name: `\u0110\xE3 \xE2u y\u1EBFm (${summary.petting.length} pet)`, value: pettingLines, inline: false });
+    if (skipLines) embed.addFields({ name: `B\u1ECF qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+    await interaction.editReply({ embeds: [embed] });
+    return;
+  }
+  const result = await petPet(player.id, petInput);
   await interaction.editReply(`\u{1F496} ${interaction.user.username} \u0111\xE3 \xE2u y\u1EBFm **${result.petName}**! Y\xEAu th\xEDch: **${result.affection}**. C\xF2n ${result.remaining}/${GAME.dailyPetLimit} l\u01B0\u1EE3t h\xF4m nay.`);
 }
 async function inventory(interaction) {
@@ -77323,7 +77499,7 @@ async function inventory(interaction) {
     return `${food.icon} **${food.name}**${statusText}${locked}
 ID: \`${food.id}\``;
   });
-  await interaction.editReply({ embeds: [new import_discord4.EmbedBuilder().setColor(6006737).setTitle("Kho th\u1EE9c \u0103n").setDescription(lines.join("\n"))] });
+  await interaction.editReply({ embeds: [new import_discord5.EmbedBuilder().setColor(6006737).setTitle("Kho th\u1EE9c \u0103n").setDescription(lines.join("\n"))] });
 }
 async function shop(interaction) {
   await interaction.deferReply();
@@ -77341,7 +77517,7 @@ async function shop(interaction) {
     const list2 = foods.map((food) => `${food.icon} **${food.name}** \u2014 ${food.price} v\xE0ng \xB7 m\u1EDF Lv.${food.unlockLevel}
 \`${food.id}\` \u2014 ${food.description}`).join("\n\n");
     await interaction.editReply({
-      embeds: [new import_discord4.EmbedBuilder().setColor(16038210).setTitle("\u{1F6D2} Shop th\u1EE9c \u0103n (catalog)").setDescription(list2).setFooter({ text: "Mua: /shop food \u2192 ch\u1ECDn m\xF3n t\u1EEB danh s\xE1ch, nh\u1EADp quantity" })]
+      embeds: [new import_discord5.EmbedBuilder().setColor(16038210).setTitle("\u{1F6D2} Shop th\u1EE9c \u0103n (catalog)").setDescription(list2).setFooter({ text: "Mua: /shop food \u2192 ch\u1ECDn m\xF3n t\u1EEB danh s\xE1ch, nh\u1EADp quantity" })]
     });
     return;
   }
@@ -77364,7 +77540,7 @@ async function shop(interaction) {
   const ownedCount = await prisma.userHouse.count({ where: { userId: player.id } });
   await interaction.editReply({
     embeds: [
-      new import_discord4.EmbedBuilder().setColor(12616956).setTitle(`\u{1F3E0} Shop nh\xE0 \u1EDF (b\u1EA1n: ${ownedCount}/${slots} slot)`).setDescription(list).setFooter({ text: "Mua: /shop house \u2192 ch\u1ECDn nh\xE0; khi h\u1EBFt slot th\xEAm option 'replace' \u0111\u1EC3 n\xE2ng c\u1EA5p." })
+      new import_discord5.EmbedBuilder().setColor(12616956).setTitle(`\u{1F3E0} Shop nh\xE0 \u1EDF (b\u1EA1n: ${ownedCount}/${slots} slot)`).setDescription(list).setFooter({ text: "Mua: /shop house \u2192 ch\u1ECDn nh\xE0; khi h\u1EBFt slot th\xEAm option 'replace' \u0111\u1EC3 n\xE2ng c\u1EA5p." })
     ]
   });
 }
@@ -77383,7 +77559,7 @@ async function house(interaction) {
     const config = GAME.house[h.houseType];
     return `${config.icon} **${config.name}** \u2014 ch\u1EE9a ${config.maxPets} pet \xB7 comfort t\u1ED1i thi\u1EC3u ${config.comfortFloor}${best?.houseType === h.houseType ? " \u2B50" : ""}`;
   }).join("\n") : "B\u1EA1n ch\u01B0a c\xF3 nh\xE0 n\xE0o. H\xE3y d\xF9ng /shop house.";
-  const embed = new import_discord4.EmbedBuilder().setColor(9417689).setTitle("\u{1F3E0} Quy ho\u1EA1ch nh\xE0 \u1EDF c\u1EE7a b\u1EA1n").addFields(
+  const embed = new import_discord5.EmbedBuilder().setColor(9417689).setTitle("\u{1F3E0} Quy ho\u1EA1ch nh\xE0 \u1EDF c\u1EE7a b\u1EA1n").addFields(
     { name: "Nh\xE0 \u0111ang s\u1EDF h\u1EEFu", value: houseLines, inline: false },
     { name: "Slot nh\xE0", value: `${sorted.length}/${slots}`, inline: true },
     { name: "S\u1EE9c ch\u1EE9a pet", value: `${petCount}/${capacity}`, inline: true },
@@ -77393,16 +77569,56 @@ async function house(interaction) {
 }
 async function setprefix(interaction) {
   if (!interaction.inGuild()) {
-    await interaction.reply({ content: "L\u1EC7nh /setprefix ch\u1EC9 d\xF9ng \u0111\u01B0\u1EE3c trong m\xE1y ch\u1EE7 (server).", flags: import_discord4.MessageFlags.Ephemeral });
+    await interaction.reply({ content: "L\u1EC7nh /setprefix ch\u1EC9 d\xF9ng \u0111\u01B0\u1EE3c trong m\xE1y ch\u1EE7 (server).", flags: import_discord5.MessageFlags.Ephemeral });
     return;
   }
   const newPrefix = interaction.options.getString("prefix", true);
   try {
     const prefix = await setPrefix(interaction.guildId, newPrefix);
-    await interaction.reply({ content: `\u2705 \u0110\xE3 \u0111\u1ED5i prefix c\u1EE7a server th\xE0nh \`${prefix}\`. Th\u1EED \`${prefix}help\` \u0111\u1EC3 xem l\u1EC7nh.`, flags: import_discord4.MessageFlags.Ephemeral });
+    await interaction.reply({ content: `\u2705 \u0110\xE3 \u0111\u1ED5i prefix c\u1EE7a server th\xE0nh \`${prefix}\`. Th\u1EED \`${prefix}help\` \u0111\u1EC3 xem l\u1EC7nh.`, flags: import_discord5.MessageFlags.Ephemeral });
   } catch (error) {
-    await interaction.reply({ content: `\u26A0\uFE0F ${error instanceof Error ? error.message : "\u0110\xE3 c\xF3 l\u1ED7i"}`, flags: import_discord4.MessageFlags.Ephemeral });
+    await interaction.reply({ content: `\u26A0\uFE0F ${error instanceof Error ? error.message : "\u0110\xE3 c\xF3 l\u1ED7i"}`, flags: import_discord5.MessageFlags.Ephemeral });
   }
+}
+async function notify(interaction) {
+  if (!interaction.inGuild()) {
+    await interaction.reply({ content: "L\u1EC7nh /notify ch\u1EC9 d\xF9ng \u0111\u01B0\u1EE3c trong m\xE1y ch\u1EE7 (server).", flags: import_discord5.MessageFlags.Ephemeral });
+    return;
+  }
+  const selected = interaction.options.getChannel("channel");
+  const current = await getNotificationChannel(interaction.guildId);
+  let channelId;
+  if (selected) {
+    if (!isTextChannelType(selected.type)) {
+      await interaction.reply({ content: "\u26A0\uFE0F H\xE3y ch\u1ECDn k\xEAnh v\u0103n b\u1EA3n (text channel) \u0111\u1EC3 nh\u1EADn th\xF4ng b\xE1o.", flags: import_discord5.MessageFlags.Ephemeral });
+      return;
+    }
+    channelId = selected.id;
+  } else if (current) {
+    channelId = null;
+  } else {
+    channelId = interaction.channelId;
+  }
+  await setNotificationChannel(interaction.guildId, channelId);
+  if (!channelId) {
+    await interaction.reply({ content: "\u{1F515} \u0110\xE3 t\u1EAFt th\xF4ng b\xE1o c\u1EADp nh\u1EADt c\u1EE7a server.", flags: import_discord5.MessageFlags.Ephemeral });
+    return;
+  }
+  const announced = await sendLatestUpdateToGuild(interaction.client, interaction.guildId);
+  const sentText = announced ? "\n\u{1F4E2} \u0110\xE3 g\u1EEDi th\xF4ng b\xE1o c\u1EADp nh\u1EADt m\u1EDBi nh\u1EA5t \u0111\u1EBFn k\xEAnh n\xE0y." : "";
+  await interaction.reply({
+    content: `\u2705 \u0110\xE3 \u0111\u0103ng k\xFD <#${channelId}> nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt phi\xEAn b\u1EA3n.${sentText}`,
+    flags: import_discord5.MessageFlags.Ephemeral
+  });
+}
+function isTextChannelType(type) {
+  return [
+    import_discord5.ChannelType.GuildText,
+    import_discord5.ChannelType.GuildAnnouncement,
+    import_discord5.ChannelType.PublicThread,
+    import_discord5.ChannelType.PrivateThread,
+    import_discord5.ChannelType.GuildForum
+  ].includes(type);
 }
 async function play(interaction) {
   await ensurePlayer(interaction.user.id);
@@ -77437,9 +77653,12 @@ async function help(interaction) {
     "",
     "**X\xE3 h\u1ED9i**",
     "`/leaderboard` \u2014 b\u1EA3ng x\u1EBFp h\u1EA1ng",
-    "`/start` \u2014 t\u1EA1o h\u1ED3 s\u01A1 n\u1EBFu ch\u01B0a c\xF3"
+    "`/start` \u2014 t\u1EA1o h\u1ED3 s\u01A1 n\u1EBFu ch\u01B0a c\xF3",
+    "",
+    "**Server**",
+    "`/notify #k\xEAnh` \u2014 \u0111\u0103ng k\xFD nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt (g\xF5 /notify \u0111\u1EC3 t\u1EAFt)"
   ].join("\n");
-  await interaction.reply({ embeds: [new import_discord4.EmbedBuilder().setColor(5793266).setTitle("\u{1F43E} Pet Haven \u2014 H\u01B0\u1EDBng d\u1EABn").setDescription(description)] });
+  await interaction.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(5793266).setTitle("\u{1F43E} Pet Haven \u2014 H\u01B0\u1EDBng d\u1EABn").setDescription(description)] });
 }
 async function leaderboard(interaction) {
   await interaction.deferReply();
@@ -77448,7 +77667,7 @@ async function leaderboard(interaction) {
   const topGold = await prisma.user.findMany({ orderBy: { gold: "desc" }, take: 10 });
   const levelLines = topLevel.map((user, index) => `${index + 1}. <@${user.discordId}> \u2014 Lv.${user.level} \xB7 ${user._count.pets} pet`).join("\n");
   const goldLines = topGold.map((user, index) => `${index + 1}. <@${user.discordId}> \u2014 \u{1FA99} ${user.gold}`).join("\n");
-  const embed = new import_discord4.EmbedBuilder().setColor(14796441).setTitle("\u{1F3C6} B\u1EA3ng x\u1EBFp h\u1EA1ng").addFields({ name: "Level cao nh\u1EA5t", value: levelLines || "Ch\u01B0a c\xF3", inline: true }, { name: "Nhi\u1EC1u v\xE0ng nh\u1EA5t", value: goldLines || "Ch\u01B0a c\xF3", inline: true });
+  const embed = new import_discord5.EmbedBuilder().setColor(14796441).setTitle("\u{1F3C6} B\u1EA3ng x\u1EBFp h\u1EA1ng").addFields({ name: "Level cao nh\u1EA5t", value: levelLines || "Ch\u01B0a c\xF3", inline: true }, { name: "Nhi\u1EC1u v\xE0ng nh\u1EA5t", value: goldLines || "Ch\u01B0a c\xF3", inline: true });
   await interaction.editReply({ embeds: [embed] });
 }
 
@@ -77459,7 +77678,7 @@ async function handleAutocomplete(interaction) {
   const focused = interaction.options.getFocused(true);
   try {
     if ((commandName === "feed" || commandName === "petting") && focused.name === "pet") {
-      return respondPets(interaction, focused.value);
+      return respondPets(interaction, focused.value, commandName === "feed");
     }
     if (commandName === "feed" && focused.name === "food") {
       return respondInventoryFood(interaction, focused.value);
@@ -77481,25 +77700,28 @@ async function requireUserUserId(interaction) {
   const user = await prisma.user.findUnique({ where: { discordId: interaction.user.id } });
   return user?.id ?? null;
 }
-async function respondPets(interaction, queryRaw) {
+async function respondPets(interaction, queryRaw, includeBatch) {
   const userId = await requireUserUserId(interaction);
   const query = queryRaw.toLowerCase();
   if (!userId) return interaction.respond([]);
-  const pets2 = await prisma.pet.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "asc" }, take: 25 });
+  const pets2 = await prisma.pet.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "asc" }, take: 24 });
   const filtered = pets2.filter((pet) => {
     if (!query) return true;
     const speciesInfo = SPECIES[pet.species];
-    return pet.petCode.toLowerCase().includes(query) || pet.name.toLowerCase().includes(query) || pet.variant.toLowerCase().includes(query) || speciesInfo.label.toLowerCase().includes(query);
+    return pet.name.toLowerCase().includes(query) || pet.variant.toLowerCase().includes(query) || speciesInfo.label.toLowerCase().includes(query);
   });
-  await interaction.respond(
-    filtered.map((pet) => {
-      const speciesInfo = SPECIES[pet.species];
-      return {
-        value: pet.petCode,
-        name: `${speciesInfo.icon} ${pet.name} \xB7 ${pet.variant} [${pet.petCode}]`.slice(0, 100)
-      };
-    })
-  );
+  const choices = filtered.map((pet) => {
+    const speciesInfo = SPECIES[pet.species];
+    return {
+      // petCode vẫn là value nội bộ — handler dùng để resolve pet
+      value: pet.petCode,
+      name: `${speciesInfo.icon} ${pet.name} \xB7 ${pet.variant}`.slice(0, 100)
+    };
+  });
+  if (includeBatch && (!query || "all".includes(query) || "t\u1EA5t c\u1EA3".includes(query))) {
+    choices.unshift({ value: "all", name: "\u{1F43E} T\u1EA5t c\u1EA3 pet (h\xE0nh \u0111\u1ED9ng h\xE0ng lo\u1EA1t)" });
+  }
+  await interaction.respond(choices.slice(0, 25));
 }
 async function respondInventoryFood(interaction, queryRaw) {
   const userId = await requireUserUserId(interaction);
@@ -77590,7 +77812,7 @@ async function respondOwnedHouses(interaction, queryRaw) {
 }
 
 // src/interactions/prefix-handler.ts
-var import_discord5 = __toESM(require_src(), 1);
+var import_discord6 = __toESM(require_src(), 1);
 var import_client5 = require("@prisma/client");
 var import_node_crypto2 = require("node:crypto");
 function parsePrefixCommand(content, prefix) {
@@ -77644,6 +77866,8 @@ async function route(message, command, args) {
       return pLeaderboard(message);
     case "setprefix":
       return pSetPrefix(message, args);
+    case "notify":
+      return pNotify(message, args);
     default:
       await message.reply(`Kh\xF4ng nh\u1EADn ra l\u1EC7nh \`${command}\`. G\xF5 \`${"p!"}help\` \u0111\u1EC3 xem danh s\xE1ch l\u1EC7nh.`);
   }
@@ -77655,7 +77879,7 @@ D\xF9ng **p!adopt** \u0111\u1EC3 nh\u1EADn pet \u0111\u1EA7u ti\xEAn (2 pet \u01
 async function pHelp(message, args) {
   const category = args[0]?.toLowerCase();
   const description = category ? helpCategory(category) : helpAll();
-  await message.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(5793266).setTitle("\u{1F43E} Pet Haven \u2014 L\u1EC7nh text (prefix p!)").setDescription(description)] });
+  await message.reply({ embeds: [new import_discord6.EmbedBuilder().setColor(5793266).setTitle("\u{1F43E} Pet Haven \u2014 L\u1EC7nh text (prefix p!)").setDescription(description)] });
 }
 function helpCategory(category) {
   const sections = {
@@ -77682,6 +77906,7 @@ function helpAll() {
     "",
     "**Kh\xE1c**",
     "`p!leaderboard` \u2014 b\u1EA3ng x\u1EBFp h\u1EA1ng",
+    "`p!notify [#k\xEAnh|off]` \u2014 b\u1EADt/t\u1EAFt k\xEAnh nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt",
     "`p!help <pet|kinh|game>` \u2014 h\u01B0\u1EDBng d\u1EABn theo danh m\u1EE5c"
   ].join("\n");
 }
@@ -77711,11 +77936,11 @@ async function pAdopt(message, userId, args) {
   const variant = option.variants[Math.floor(Math.random() * option.variants.length)];
   const petCount = await prisma.pet.count({ where: { ownerId: userId } });
   const feeNote = petCount >= GAME.adopt.freeAdopts ? ` (ph\xED ${GAME.adopt.cost} v\xE0ng)` : " (mi\u1EC5n ph\xED)";
-  const { pet, feeApplied } = await adoptPet(userId, species, name, variant);
+  const { feeApplied } = await adoptPet(userId, species, name, variant);
   const feeMsg = feeApplied ? `
 \u{1FA99} \u0110\xE3 tr\u1EEB ${GAME.adopt.cost} v\xE0ng ph\xED nh\u1EADn nu\xF4i.` : "";
   await privateReply(message, `\u2728 B\u1EA1n \u0111\xE3 nh\u1EADn **${name}** \u2014 ${option.icon} ${option.label} gi\u1ED1ng ${variant}${feeNote}${feeMsg}
-M\xE3 pet: \`${pet.petCode}\``);
+D\xF9ng **p!feed ${name} <m\xE3 th\u1EE9c \u0103n>** \u0111\u1EC3 cho \u0103n!`);
 }
 function normalizeSpecies(raw) {
   const aliases = {
@@ -77746,10 +77971,9 @@ async function pPets(message, userId) {
   const description = pets2.map((pet) => {
     const species = SPECIES[pet.species];
     return `${species.icon} **${pet.name}** \xB7 ${pet.variant}
-Lv.${pet.level} \xB7 bonus +${petExperienceBonus(pet.level)}% EXP \xB7 ${moodLabel(pet.mood)} \xB7 comfort ${pet.comfort}/100 \xB7 y\xEAu th\xEDch ${pet.affection}
-M\xE3: \`${pet.petCode}\``;
+Lv.${pet.level} \xB7 bonus +${petExperienceBonus(pet.level)}% EXP \xB7 ${moodLabel(pet.mood)} \xB7 comfort ${pet.comfort}/100 \xB7 y\xEAu th\xEDch ${pet.affection}`;
   }).join("\n\n");
-  await privateReply(message, { embeds: [new import_discord5.EmbedBuilder().setColor(8112495).setTitle("C\xE1c pet c\u1EE7a b\u1EA1n").setDescription(description)] });
+  await privateReply(message, { embeds: [new import_discord6.EmbedBuilder().setColor(8112495).setTitle("C\xE1c pet c\u1EE7a b\u1EA1n").setDescription(description)] });
 }
 async function pFeed(message, userId, args) {
   const player = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
@@ -77758,19 +77982,37 @@ async function pFeed(message, userId, args) {
     await privateReply(message, "B\u1EA1n ch\u01B0a c\xF3 pet. D\xF9ng `p!adopt` \u0111\u1EC3 nh\u1EADn pet nh\xE9!");
     return;
   }
-  let petCode = args[0] ?? null;
-  let foodId = args[1] ?? null;
-  if (!petCode || !foodId) {
+  const petArg = args[0] ?? null;
+  const foodId = args[1] ?? null;
+  if (petArg) {
+    const isBatch = petArg === "all" || petArg.includes(",");
+    if (isBatch) {
+      if (!foodId) {
+        await privateReply(message, "C\xE1ch d\xF9ng batch: `p!feed all <m\xE3 th\u1EE9c \u0103n>` ho\u1EB7c `p!feed dog1,cat1 <m\xE3 th\u1EE9c \u0103n>`");
+        return;
+      }
+      const identifiers = petArg === "all" ? ["all"] : petArg.split(",").map((s) => s.trim()).filter(Boolean);
+      const summary = await feedPetList(player.id, identifiers, foodId);
+      const fedLines = summary.fed.map((r) => `\u2705 **${r.petName}** +${r.petExperience} EXP`).join("\n") || "Kh\xF4ng c\xF3 pet n\xE0o \u0111\u01B0\u1EE3c cho \u0103n.";
+      const skipLines = summary.skipped.map((r) => `\u26A0\uFE0F **${r.petName}** \u2014 ${r.reason}`).join("\n");
+      const embed = new import_discord6.EmbedBuilder().setColor(8112495).setTitle(`\u{1F37D}\uFE0F Cho \u0103n h\xE0ng lo\u1EA1t \u2014 ${summary.foodName}`).addFields({ name: `\u0110\xE3 cho \u0103n (${summary.fed.length} pet)`, value: fedLines, inline: false });
+      if (skipLines) embed.addFields({ name: `B\u1ECF qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+      if (summary.totalUserExperience > 0) embed.setFooter({ text: `+${summary.totalUserExperience} EXP cho ${message.author.username}` });
+      await privateReply(message, { embeds: [embed] });
+      return;
+    }
+  }
+  if (!petArg || !foodId) {
     await privateReply(message, await feedCatalog(player.id));
     return;
   }
-  const result = await feedPet(player.id, petCode, foodId);
+  const result = await feedPet(player.id, petArg, foodId);
   await privateReply(message, `\u{1F37D}\uFE0F ${message.author.username} \u0111\xE3 cho **${result.petName}** \u0103n **${result.foodName}**! +${result.userExperience} EXP cho ${message.author.username}, +${result.petExperience} EXP cho ${result.petName}.`);
 }
 async function feedCatalog(userId) {
   const pets2 = await prisma.pet.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "asc" } });
   const inventory2 = await prisma.userInventory.findMany({ where: { userId }, include: { food: true } });
-  const petLines = pets2.length ? pets2.map((p) => `${SPECIES[p.species].icon} \`${p.petCode}\` **${p.name}** (${SPECIES[p.species].label})`).join("\n") : "Ch\u01B0a c\xF3 pet";
+  const petLines = pets2.length ? pets2.map((p) => `${SPECIES[p.species].icon} **${p.name}** (${SPECIES[p.species].label})`).join("\n") : "Ch\u01B0a c\xF3 pet";
   const foodLines = inventory2.filter((i) => i.quantity > 0).map((i) => `${i.food.icon} \`${i.food.id}\` **${i.food.name}** \u2014 c\xF2n ${i.quantity} ph\u1EA7n`).join("\n") || "Kho tr\u1ED1ng. Mua b\u1EB1ng `p!shop food`";
   return [
     "**Danh s\xE1ch pet**",
@@ -77779,7 +78021,8 @@ async function feedCatalog(userId) {
     "**Kho th\u1EE9c \u0103n**",
     foodLines,
     "",
-    "D\xF9ng: `p!feed <m\xE3 pet> <m\xE3 th\u1EE9c \u0103n>`  \u2192 v\xED d\u1EE5 `p!feed 00001 basic-kibble`"
+    "D\xF9ng: `p!feed <t\xEAn pet> <m\xE3 th\u1EE9c \u0103n>` \u2014 v\xED d\u1EE5 `p!feed M\xE8o Con basic-kibble`",
+    "Cho \u0103n h\xE0ng lo\u1EA1t: `p!feed all <m\xE3 th\u1EE9c \u0103n>` ho\u1EB7c `p!feed dog1,cat1 <m\xE3 th\u1EE9c \u0103n>`"
   ].join("\n");
 }
 async function pPetting(message, userId, args) {
@@ -77788,19 +78031,33 @@ async function pPetting(message, userId, args) {
     await privateReply(message, "B\u1EA1n ch\u01B0a c\xF3 pet. D\xF9ng `p!adopt` nh\xE9!");
     return;
   }
-  let petCode = args[0] ?? null;
-  if (!petCode) {
-    if (pets2.length === 1) {
-      petCode = pets2[0].petCode;
-    } else {
-      const lines = pets2.map((p) => `${SPECIES[p.species].icon} \`${p.petCode}\` **${p.name}** \u2014 \u0111\xE3 \xE2u y\u1EBFm ${p.dailyPetCount}/5 \xB7 y\xEAu th\xEDch ${p.affection}`).join("\n");
-      await privateReply(message, { embeds: [new import_discord5.EmbedBuilder().setColor(16361688).setTitle("Ch\u1ECDn pet \u0111\u1EC3 \xE2u y\u1EBFm").setDescription(`${lines}
-
-D\xF9ng: \`p!petting <m\xE3 pet>\``)] });
+  const petArg = args[0] ?? null;
+  if (petArg) {
+    const isBatch = petArg === "all" || petArg.includes(",");
+    if (isBatch) {
+      const identifiers = petArg === "all" ? ["all"] : petArg.split(",").map((s) => s.trim()).filter(Boolean);
+      const summary = await petPetList(userId, identifiers);
+      const pettingLines = summary.petting.map((r) => `\u{1F496} **${r.petName}** y\xEAu th\xEDch: ${r.affection} (c\xF2n ${r.remaining} l\u01B0\u1EE3t)`).join("\n") || "Kh\xF4ng c\xF3 pet n\xE0o \u0111\u01B0\u1EE3c \xE2u y\u1EBFm.";
+      const skipLines = summary.skipped.map((r) => `\u26A0\uFE0F **${r.petName}** \u2014 ${r.reason}`).join("\n");
+      const embed = new import_discord6.EmbedBuilder().setColor(16361688).setTitle(`\u{1F496} \xC2u y\u1EBFm h\xE0ng lo\u1EA1t`).addFields({ name: `\u0110\xE3 \xE2u y\u1EBFm (${summary.petting.length} pet)`, value: pettingLines, inline: false });
+      if (skipLines) embed.addFields({ name: `B\u1ECF qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+      await privateReply(message, { embeds: [embed] });
       return;
     }
   }
-  const result = await petPet(userId, petCode);
+  if (!petArg) {
+    if (pets2.length === 1) {
+      const result2 = await petPet(userId, pets2[0].petCode);
+      await privateReply(message, `\u{1F496} Pet r\u1EA5t th\xEDch! Y\xEAu th\xEDch: **${result2.affection}**. C\xF2n ${result2.remaining}/${GAME.dailyPetLimit} l\u01B0\u1EE3t h\xF4m nay.`);
+      return;
+    }
+    const lines = pets2.map((p) => `${SPECIES[p.species].icon} **${p.name}** \u2014 \u0111\xE3 \xE2u y\u1EBFm ${p.dailyPetCount}/5 \xB7 y\xEAu th\xEDch ${p.affection}`).join("\n");
+    await privateReply(message, { embeds: [new import_discord6.EmbedBuilder().setColor(16361688).setTitle("Ch\u1ECDn pet \u0111\u1EC3 \xE2u y\u1EBFm").setDescription(`${lines}
+
+D\xF9ng: \`p!petting <t\xEAn pet>\` ho\u1EB7c \`p!petting all\``)] });
+    return;
+  }
+  const result = await petPet(userId, petArg);
   await privateReply(message, `\u{1F496} Pet r\u1EA5t th\xEDch! Y\xEAu th\xEDch: **${result.affection}**. C\xF2n ${result.remaining}/${GAME.dailyPetLimit} l\u01B0\u1EE3t h\xF4m nay.`);
 }
 async function pDaily(message, userId) {
@@ -77821,7 +78078,7 @@ async function pProfile(message, userId) {
   const slots = houseSlotCount(user.level);
   const ownedHouses = await prisma.userHouse.count({ where: { userId } });
   const house2 = GAME.house[user.activeHouse];
-  const embed = new import_discord5.EmbedBuilder().setColor(16038210).setTitle(`H\u1ED3 s\u01A1 c\u1EE7a ${message.author.username}`).addFields(
+  const embed = new import_discord6.EmbedBuilder().setColor(16038210).setTitle(`H\u1ED3 s\u01A1 c\u1EE7a ${message.author.username}`).addFields(
     { name: "Level", value: `${user.level} (${user.experience}/${user.level * GAME.baseExperiencePerLevel} EXP)`, inline: true },
     { name: "V\xE0ng", value: `\u{1FA99} ${user.gold}`, inline: true },
     { name: "T\u1ED5ng pet", value: `\u{1F43E} ${pets2} pet`, inline: true },
@@ -77849,7 +78106,7 @@ async function pInventory(message, userId) {
     return `${food.icon} **${food.name}**${statusText}${locked}
 ID: \`${food.id}\``;
   });
-  await message.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(6006737).setTitle("Kho th\u1EE9c \u0103n").setDescription(lines.join("\n"))] });
+  await message.reply({ embeds: [new import_discord6.EmbedBuilder().setColor(6006737).setTitle("Kho th\u1EE9c \u0103n").setDescription(lines.join("\n"))] });
 }
 async function pShop(message, userId, command, args) {
   const player = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
@@ -77865,7 +78122,7 @@ async function pShop(message, userId, command, args) {
     const foods = await prisma.food.findMany({ orderBy: { unlockLevel: "asc" } });
     const list = foods.map((f) => `${f.icon} **${f.name}** \u2014 ${f.price} v\xE0ng \xB7 Lv.${f.unlockLevel}
 \`${f.id}\``).join("\n");
-    await message.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(16038210).setTitle("\u{1F6D2} Shop th\u1EE9c \u0103n").setDescription(list).setFooter({ text: "Mua: p!shop food <id> <s\u1ED1 l\u01B0\u1EE3ng>" })] });
+    await message.reply({ embeds: [new import_discord6.EmbedBuilder().setColor(16038210).setTitle("\u{1F6D2} Shop th\u1EE9c \u0103n").setDescription(list).setFooter({ text: "Mua: p!shop food <id> <s\u1ED1 l\u01B0\u1EE3ng>" })] });
     return;
   }
   if (sub === "house" || sub === "") {
@@ -77887,7 +78144,7 @@ async function pShop(message, userId, command, args) {
       return `${h.icon} **${h.name}** \u2014 ${h.price} v\xE0ng \xB7 Lv.${h.unlockLevel}${already}
 \`${id}\` \xB7 ch\u1EE9a ${h.maxPets} pet`;
     }).join("\n");
-    await message.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(12616956).setTitle(`\u{1F3E0} Shop nh\xE0 \u1EDF (${ownedCount}/${slots} slot)`).setDescription(list).setFooter({ text: "Mua: p!shop house <id> [replace] | xem: p!house" })] });
+    await message.reply({ embeds: [new import_discord6.EmbedBuilder().setColor(12616956).setTitle(`\u{1F3E0} Shop nh\xE0 \u1EDF (${ownedCount}/${slots} slot)`).setDescription(list).setFooter({ text: "Mua: p!shop house <id> [replace] | xem: p!house" })] });
     return;
   }
   await message.reply("C\xE1ch d\xF9ng: `p!shop food` ho\u1EB7c `p!shop house`.");
@@ -77904,7 +78161,7 @@ async function pHouse(message, userId) {
   const petCount = await prisma.pet.count({ where: { ownerId: userId } });
   const best = sorted.length ? sorted.reduce((max, h) => HOUSE_PRIORITY[h.houseType] > HOUSE_PRIORITY[max.houseType] ? h : max, sorted[0]) : null;
   const lines = sorted.length ? sorted.map((h) => `${GAME.house[h.houseType].icon} **${GAME.house[h.houseType].name}** \u2014 ch\u1EE9a ${GAME.house[h.houseType].maxPets}${best?.houseType === h.houseType ? " \u2B50" : ""}`).join("\n") : "Ch\u01B0a c\xF3 nh\xE0";
-  await message.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(9417689).setTitle("\u{1F3E0} Nh\xE0 c\u1EE7a b\u1EA1n").setDescription(lines).addFields({ name: "Slot / s\u1EE9c ch\u1EE9a", value: `${sorted.length}/${slots} slot \xB7 ${petCount}/${capacity} pet`, inline: true })] });
+  await message.reply({ embeds: [new import_discord6.EmbedBuilder().setColor(9417689).setTitle("\u{1F3E0} Nh\xE0 c\u1EE7a b\u1EA1n").setDescription(lines).addFields({ name: "Slot / s\u1EE9c ch\u1EE9a", value: `${sorted.length}/${slots} slot \xB7 ${petCount}/${capacity} pet`, inline: true })] });
 }
 async function pPlay(message, args) {
   const game = args[0]?.toLowerCase() ?? "xo";
@@ -77923,7 +78180,37 @@ async function pLeaderboard(message) {
   const topGold = await prisma.user.findMany({ orderBy: { gold: "desc" }, take: 10 });
   const levelLines = topLevel.map((u, i) => `${i + 1}. <@${u.discordId}> \u2014 Lv.${u.level} \xB7 ${u._count.pets} pet`).join("\n");
   const goldLines = topGold.map((u, i) => `${i + 1}. <@${u.discordId}> \u2014 \u{1FA99} ${u.gold}`).join("\n");
-  await message.reply({ embeds: [new import_discord5.EmbedBuilder().setColor(14796441).setTitle("\u{1F3C6} B\u1EA3ng x\u1EBFp h\u1EA1ng").addFields({ name: "Level", value: levelLines || "Ch\u01B0a c\xF3", inline: true }, { name: "V\xE0ng", value: goldLines || "Ch\u01B0a c\xF3", inline: true })] });
+  await message.reply({ embeds: [new import_discord6.EmbedBuilder().setColor(14796441).setTitle("\u{1F3C6} B\u1EA3ng x\u1EBFp h\u1EA1ng").addFields({ name: "Level", value: levelLines || "Ch\u01B0a c\xF3", inline: true }, { name: "V\xE0ng", value: goldLines || "Ch\u01B0a c\xF3", inline: true })] });
+}
+async function pNotify(message, args) {
+  if (!message.guild) {
+    await message.reply("L\u1EC7nh n\xE0y ch\u1EC9 d\xF9ng \u0111\u01B0\u1EE3c trong m\xE1y ch\u1EE7.");
+    return;
+  }
+  const arg = args[0]?.trim();
+  const current = await getNotificationChannel(message.guild.id);
+  const channelMention = arg?.match(/^<#(\d+)>$/);
+  let channelId;
+  if (channelMention) {
+    channelId = channelMention[1];
+  } else if (arg === "off" || !arg && current) {
+    channelId = null;
+  } else if (arg && /^\d+$/.test(arg)) {
+    channelId = arg;
+  } else if (!arg) {
+    channelId = message.channelId;
+  } else {
+    await message.reply("C\xE1ch d\xF9ng: `p!notify` (d\xF9ng k\xEAnh hi\u1EC7n t\u1EA1i), `p!notify #k\xEAnh` (ch\u1ECDn k\xEAnh) ho\u1EB7c `p!notify off` (t\u1EAFt).");
+    return;
+  }
+  await setNotificationChannel(message.guild.id, channelId);
+  if (!channelId) {
+    await message.reply("\u{1F515} \u0110\xE3 t\u1EAFt th\xF4ng b\xE1o c\u1EADp nh\u1EADt c\u1EE7a server.");
+    return;
+  }
+  const announced = await sendLatestUpdateToGuild(message.client, message.guild.id);
+  const sentText = announced ? "\n\u{1F4E2} \u0110\xE3 g\u1EEDi th\xF4ng b\xE1o c\u1EADp nh\u1EADt m\u1EDBi nh\u1EA5t \u0111\u1EBFn k\xEAnh n\xE0y." : "";
+  await message.reply(`\u2705 \u0110\xE3 \u0111\u0103ng k\xFD <#${channelId}> nh\u1EADn th\xF4ng b\xE1o c\u1EADp nh\u1EADt.${sentText}`);
 }
 async function pSetPrefix(message, args) {
   if (!message.guild) {
@@ -77962,22 +78249,28 @@ function enqueue(userId, task) {
 }
 
 // src/index.ts
-var client = new import_discord6.Client({
+var client = new import_discord7.Client({
   intents: [
-    import_discord6.GatewayIntentBits.Guilds,
-    import_discord6.GatewayIntentBits.GuildMessages,
-    import_discord6.GatewayIntentBits.DirectMessages,
-    import_discord6.GatewayIntentBits.MessageContent
+    import_discord7.GatewayIntentBits.Guilds,
+    import_discord7.GatewayIntentBits.GuildMessages,
+    import_discord7.GatewayIntentBits.DirectMessages,
+    import_discord7.GatewayIntentBits.MessageContent
   ]
 });
-client.once(import_discord6.Events.ClientReady, async (readyClient) => {
+client.once(import_discord7.Events.ClientReady, async (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}`);
+  try {
+    await ensureAnnouncementColumns();
+    await broadcastUpdateNotifications(readyClient);
+  } catch (error) {
+    console.error("Announcement init failed:", error);
+  }
   await applyNeglect();
   setInterval(() => {
     void applyNeglect();
   }, 24 * 60 * 60 * 1e3);
 });
-client.on(import_discord6.Events.MessageCreate, async (message) => {
+client.on(import_discord7.Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
   try {
     const prefix = await getPrefix(message.guildId ?? null);
@@ -77987,7 +78280,7 @@ client.on(import_discord6.Events.MessageCreate, async (message) => {
     console.error(error);
   }
 });
-client.on(import_discord6.Events.InteractionCreate, async (interaction) => {
+client.on(import_discord7.Events.InteractionCreate, async (interaction) => {
   try {
     if (interaction.isAutocomplete()) {
       await handleAutocomplete(interaction);
@@ -78015,7 +78308,7 @@ client.on(import_discord6.Events.InteractionCreate, async (interaction) => {
     console.error(error);
     const message = error instanceof Error ? error.message : "\u0110\xE3 c\xF3 l\u1ED7i kh\xF4ng x\xE1c \u0111\u1ECBnh.";
     if (interaction.isRepliable()) {
-      const reply = { content: `\u26A0\uFE0F ${message}`, flags: import_discord6.MessageFlags.Ephemeral };
+      const reply = { content: `\u26A0\uFE0F ${message}`, flags: import_discord7.MessageFlags.Ephemeral };
       try {
         if (interaction.replied || interaction.deferred) await interaction.followUp(reply);
         else await interaction.reply(reply);

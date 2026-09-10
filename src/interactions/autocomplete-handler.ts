@@ -10,7 +10,7 @@ export async function handleAutocomplete(interaction: AutocompleteInteraction): 
   try {
     // Pet selection for /feed and /petting
     if ((commandName === "feed" || commandName === "petting") && focused.name === "pet") {
-      return respondPets(interaction, focused.value);
+      return respondPets(interaction, focused.value, commandName === "feed");
     }
     // Food selection in /feed
     if (commandName === "feed" && focused.name === "food") {
@@ -38,31 +38,37 @@ async function requireUserUserId(interaction: AutocompleteInteraction): Promise<
   return user?.id ?? null;
 }
 
-async function respondPets(interaction: AutocompleteInteraction, queryRaw: string): Promise<void> {
+async function respondPets(interaction: AutocompleteInteraction, queryRaw: string, includeBatch: boolean): Promise<void> {
   const userId = await requireUserUserId(interaction);
   const query = queryRaw.toLowerCase();
   if (!userId) return interaction.respond([]);
 
-  const pets = await prisma.pet.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "asc" }, take: 25 });
+  const pets = await prisma.pet.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "asc" }, take: 24 });
   const filtered = pets.filter((pet) => {
     if (!query) return true;
     const speciesInfo = SPECIES[pet.species];
     return (
-      pet.petCode.toLowerCase().includes(query) ||
       pet.name.toLowerCase().includes(query) ||
       pet.variant.toLowerCase().includes(query) ||
       speciesInfo.label.toLowerCase().includes(query)
     );
   });
-  await interaction.respond(
-    filtered.map((pet) => {
-      const speciesInfo = SPECIES[pet.species];
-      return {
-        value: pet.petCode,
-        name: `${speciesInfo.icon} ${pet.name} · ${pet.variant} [${pet.petCode}]`.slice(0, 100),
-      };
-    })
-  );
+
+  const choices = filtered.map((pet) => {
+    const speciesInfo = SPECIES[pet.species];
+    return {
+      // petCode vẫn là value nội bộ — handler dùng để resolve pet
+      value: pet.petCode,
+      name: `${speciesInfo.icon} ${pet.name} · ${pet.variant}`.slice(0, 100),
+    };
+  });
+
+  // Thêm option "all" ở đầu nếu là /feed hoặc /petting và query không lọc cụ thể
+  if (includeBatch && (!query || "all".includes(query) || "tất cả".includes(query))) {
+    choices.unshift({ value: "all", name: "🐾 Tất cả pet (hành động hàng loạt)" });
+  }
+
+  await interaction.respond(choices.slice(0, 25));
 }
 
 async function respondInventoryFood(interaction: AutocompleteInteraction, queryRaw: string): Promise<void> {

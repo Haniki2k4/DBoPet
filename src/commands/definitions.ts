@@ -16,12 +16,12 @@ export const commands = [
   new SlashCommandBuilder()
     .setName("feed")
     .setDescription("Cho pet ăn")
-    .addStringOption((option) => option.setName("pet").setDescription("Chọn pet").setRequired(true).setAutocomplete(true))
+    .addStringOption((option) => option.setName("pet").setDescription("Tên pet, danh sách cách nhau dấu phẩy, hoặc 'all'").setRequired(true).setAutocomplete(true))
     .addStringOption((option) => option.setName("food").setDescription("Chọn thức ăn trong kho").setRequired(true).setAutocomplete(true)),
   new SlashCommandBuilder()
     .setName("petting")
     .setDescription("Âu yếm pet (+10 yêu thích, tối đa 5 lần/ngày)")
-    .addStringOption((option) => option.setName("pet").setDescription("Chọn pet").setRequired(true).setAutocomplete(true)),
+    .addStringOption((option) => option.setName("pet").setDescription("Tên pet, danh sách cách nhau dấu phẩy, hoặc 'all'").setRequired(true).setAutocomplete(true)),
   new SlashCommandBuilder().setName("inventory").setDescription("Xem kho thức ăn và cảnh báo sắp hết"),
   new SlashCommandBuilder()
     .setName("shop")
@@ -40,6 +40,10 @@ export const commands = [
     .setName("setprefix")
     .setDescription("Đổi prefix lệnh text cho server")
     .addStringOption((option) => option.setName("prefix").setDescription("Prefix mới (1-5 ký tự, mặc định p!)").setRequired(true)),
+  new SlashCommandBuilder()
+    .setName("notify")
+    .setDescription("Bật/tắt kênh nhận thông báo cập nhật phiên bản")
+    .addChannelOption((option) => option.setName("channel").setDescription("Kênh nhận thông báo (bỏ trống: chọn kênh hiện tại, gõ lại để tắt)")),
   new SlashCommandBuilder().setName("play").setDescription("Chơi mini-game để nhận EXP và vàng")
     .addStringOption((option) => option.setName("game").setDescription("Chọn trò chơi").setRequired(true).addChoices(
       { name: "⭕ XO (Caro)", value: "xo" },

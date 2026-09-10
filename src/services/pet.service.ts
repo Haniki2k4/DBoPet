@@ -39,6 +39,12 @@ export async function adoptPet(ownerId: string, species: PetSpecies, name: strin
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({ where: { id: ownerId } });
 
+    // Tên pet phải unique trong cùng owner
+    const existingName = await tx.pet.findFirst({ where: { ownerId, name } });
+    if (existingName) {
+      throw new Error(`Bạn đã có pet tên "${name}" rồi. Hãy chọn tên khác.`);
+    }
+
     const petCount = await tx.pet.count({ where: { ownerId } });
     const speciesCount = await tx.pet.count({ where: { ownerId, species } });
     const capacity = await totalPetCapacity(ownerId);
@@ -77,7 +83,7 @@ export async function petPet(ownerId: string, petCode: string): Promise<{ petNam
         ],
       },
     });
-    if (!pet) throw new Error(`Không tìm thấy pet có mã "${petCode}". Hãy dùng /pets để xem danh sách pet của bạn.`);
+    if (!pet) throw new Error(`Không tìm thấy pet "${petCode}". Hãy dùng /pets để xem danh sách pet của bạn.`);
     const now = new Date();
     const shouldReset = isNewVnDay(pet.lastPetResetAt, now);
     const dailyPetCount = shouldReset ? 0 : pet.dailyPetCount;
@@ -109,9 +115,9 @@ export async function feedPet(ownerId: string, petCode: string, foodId: string):
         ],
       },
     });
-    if (!pet) throw new Error(`Không tìm thấy pet có mã "${petCode}". Hãy dùng /pets để xem danh sách pet của bạn.`);
+    if (!pet) throw new Error(`Không tìm thấy pet "${petCode}". Hãy dùng /pets để xem danh sách pet của bạn.`);
     const food = await tx.food.findUnique({ where: { id: foodId } });
-    if (!food) throw new Error(`Không tìm thấy món ăn có mã "${foodId}". Hãy dùng /shop food để xem danh mục.`);
+    if (!food) throw new Error(`Không tìm thấy món ăn "${foodId}". Hãy dùng /shop food để xem danh mục.`);
     const inventory = await tx.userInventory.findUnique({ where: { userId_foodId: { userId: ownerId, foodId } } });
     if (!inventory || inventory.quantity < 1) throw new Error(`Bạn không còn ${food.name}. Hãy dùng /shop food để mua thêm.`);
 
@@ -130,8 +136,103 @@ export async function feedPet(ownerId: string, petCode: string, foodId: string):
   });
 }
 
+export type FeedSummary = {
+  foodName: string;
+  fed: Array<{ petName: string; petExperience: number }>;
+  skipped: Array<{ petName: string; reason: string }>;
+  totalUserExperience: number;
+};
+
+/**
+ * Feed nhiều pet cùng lúc với 1 loại thức ăn.
+ * petIdentifiers: mảng tên pet, hoặc ["all"] để feed tất cả.
+ * Mỗi pet được feed trong transaction riêng — lỗi 1 pet không ảnh hưởng pet khác.
+ * Kho trừ đúng số lần feed thành công.
+ */
+export async function feedPetList(ownerId: string, petIdentifiers: string[], foodId: string): Promise<FeedSummary> {
+  const food = await prisma.food.findUnique({ where: { id: foodId } });
+  if (!food) throw new Error(`Không tìm thấy món ăn "${foodId}". Hãy dùng /shop food để xem danh mục.`);
+
+  // Resolve danh sách pet cần feed
+  let pets: Array<{ id: string; name: string; petCode: string; species: PetSpecies; level: number; comfort: number; mood: import("@prisma/client").Mood }>;
+  if (petIdentifiers.length === 1 && petIdentifiers[0] === "all") {
+    pets = await prisma.pet.findMany({ where: { ownerId }, orderBy: { createdAt: "asc" } });
+  } else {
+    const resolved = await Promise.all(
+      petIdentifiers.map((id) => {
+        const clean = resolvePetCode(id);
+        return prisma.pet.findFirst({
+          where: { ownerId, OR: [{ name: clean }, { petCode: clean }] },
+        });
+      })
+    );
+    pets = resolved.filter((p): p is NonNullable<typeof p> => p !== null);
+  }
+
+  const summary: FeedSummary = { foodName: food.name, fed: [], skipped: [], totalUserExperience: 0 };
+
+  for (const pet of pets) {
+    // Kiểm tra kho trước mỗi lượt (tránh race condition nếu loop song song)
+    const inv = await prisma.userInventory.findUnique({ where: { userId_foodId: { userId: ownerId, foodId } } });
+    if (!inv || inv.quantity < 1) {
+      summary.skipped.push({ petName: pet.name, reason: "Hết thức ăn trong kho" });
+      continue;
+    }
+
+    try {
+      const result = await feedPet(ownerId, pet.petCode, foodId);
+      summary.fed.push({ petName: result.petName, petExperience: result.petExperience });
+      summary.totalUserExperience += result.userExperience;
+    } catch (err) {
+      summary.skipped.push({ petName: pet.name, reason: err instanceof Error ? err.message : "Lỗi không xác định" });
+    }
+  }
+
+  return summary;
+}
+
+export type PetSummary = {
+  petting: Array<{ petName: string; affection: number; remaining: number }>;
+  skipped: Array<{ petName: string; reason: string }>;
+};
+
+/**
+ * Âu yếm nhiều pet cùng lúc.
+ * petIdentifiers: mảng tên pet, hoặc ["all"] để âu yếm tất cả.
+ * Mỗi pet được xử lý trong transaction riêng.
+ */
+export async function petPetList(ownerId: string, petIdentifiers: string[]): Promise<PetSummary> {
+  // Resolve danh sách pet
+  let pets: Array<{ id: string; name: string; petCode: string }>;
+  if (petIdentifiers.length === 1 && petIdentifiers[0] === "all") {
+    pets = await prisma.pet.findMany({ where: { ownerId }, orderBy: { createdAt: "asc" } });
+  } else {
+    const resolved = await Promise.all(
+      petIdentifiers.map((id) => {
+        const clean = resolvePetCode(id);
+        return prisma.pet.findFirst({
+          where: { ownerId, OR: [{ name: clean }, { petCode: clean }] },
+        });
+      })
+    );
+    pets = resolved.filter((p): p is NonNullable<typeof p> => p !== null);
+  }
+
+  const summary: PetSummary = { petting: [], skipped: [] };
+
+  for (const pet of pets) {
+    try {
+      const result = await petPet(ownerId, pet.petCode);
+      summary.petting.push({ petName: result.petName, affection: result.affection, remaining: result.remaining });
+    } catch (err) {
+      summary.skipped.push({ petName: pet.name, reason: err instanceof Error ? err.message : "Lỗi không xác định" });
+    }
+  }
+
+  return summary;
+}
+
 export async function applyNeglect(): Promise<number> {
-  const DAY_MS = 24 * 60 * 60 * 1_000;
   const pets = await prisma.pet.findMany({ include: { owner: true } });
   const now = Date.now();
   let changed = 0;

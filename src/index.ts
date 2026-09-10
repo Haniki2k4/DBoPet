@@ -6,6 +6,7 @@ import { handleAutocomplete } from "./interactions/autocomplete-handler.js";
 import { handlePrefixCommand } from "./interactions/prefix-handler.js";
 import { getPrefix } from "./services/guild.service.js";
 import { applyNeglect } from "./services/pet.service.js";
+import { broadcastUpdateNotifications, ensureAnnouncementColumns } from "./services/announcement.service.js";
 import { enqueue } from "./utils/user-queue.js";
 
 const client = new Client({
@@ -19,6 +20,12 @@ const client = new Client({
 
 client.once(Events.ClientReady, async (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}`);
+  try {
+    await ensureAnnouncementColumns();
+    await broadcastUpdateNotifications(readyClient);
+  } catch (error: unknown) {
+    console.error("Announcement init failed:", error);
+  }
   await applyNeglect();
   setInterval(() => { void applyNeglect(); }, 24 * 60 * 60 * 1_000);
 });

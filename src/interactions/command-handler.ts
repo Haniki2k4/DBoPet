@@ -1,14 +1,15 @@
-import { ChatInputCommandInteraction, EmbedBuilder, MessageFlags, PermissionFlagsBits } from "discord.js";
+import { ChatInputCommandInteraction, ChannelType, EmbedBuilder, MessageFlags, PermissionFlagsBits } from "discord.js";
 import { HouseType, PetSpecies } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { GAME, houseSlotCount, HOUSE_PRIORITY, moodLabel, petExperienceBonus, SPECIES } from "../config/game.js";
 import { boardRows, createGame } from "../games/tic-tac-toe.js";
 import { mineDifficultyRow, startTicTacToe } from "./button-handler.js";
 import { ensurePlayer, getPlayer } from "../services/player.service.js";
-import { adoptPet, feedPet, petPet, totalPetCapacity } from "../services/pet.service.js";
+import { adoptPet, feedPet, feedPetList, petPet, petPetList, totalPetCapacity } from "../services/pet.service.js";
 import { buyFood, buyHouse } from "../services/shop.service.js";
 import { claimDaily } from "../services/daily.service.js";
 import { setPrefix } from "../services/guild.service.js";
+import { getNotificationChannel, setNotificationChannel, sendLatestUpdateToGuild } from "../services/announcement.service.js";
 import { prisma } from "../database/prisma.js";
 
 export async function handleCommand(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -24,6 +25,7 @@ export async function handleCommand(interaction: ChatInputCommandInteraction): P
     case "shop": return shop(interaction);
     case "house": return house(interaction);
     case "setprefix": return setprefix(interaction);
+    case "notify": return notify(interaction);
     case "play": return play(interaction);
     case "help": return help(interaction);
     case "leaderboard": return leaderboard(interaction);
@@ -147,7 +149,7 @@ async function pets(interaction: ChatInputCommandInteraction): Promise<void> {
   }
   const description = player.pets.map((pet) => {
     const species = SPECIES[pet.species];
-    return `${species.icon} **${pet.name}** · ${pet.variant}\nLv.${pet.level} · ${pet.experience}/${pet.level * GAME.baseExperiencePerLevel} EXP · bonus +${petExperienceBonus(pet.level)}% EXP\n${moodLabel(pet.mood)} · comfort ${pet.comfort}/100 · yêu thích ${pet.affection}\nMã: \`${pet.petCode}\``;
+    return `${species.icon} **${pet.name}** · ${pet.variant}\nLv.${pet.level} · ${pet.experience}/${pet.level * GAME.baseExperiencePerLevel} EXP · bonus +${petExperienceBonus(pet.level)}% EXP\n${moodLabel(pet.mood)} · comfort ${pet.comfort}/100 · yêu thích ${pet.affection}`;
   }).join("\n\n");
   await interaction.editReply({ embeds: [new EmbedBuilder().setColor(0x7BC96F).setTitle("Các pet của bạn").setDescription(description)] });
 }
@@ -155,17 +157,54 @@ async function pets(interaction: ChatInputCommandInteraction): Promise<void> {
 async function feed(interaction: ChatInputCommandInteraction): Promise<void> {
   await interaction.deferReply();
   const player = await ensurePlayer(interaction.user.id);
-  const petCode = interaction.options.getString("pet", true);
+  const petInput = interaction.options.getString("pet", true);
   const foodId = interaction.options.getString("food", true);
-  const result = await feedPet(player.id, petCode, foodId);
+
+  // Batch mode: "all" hoặc danh sách tên cách nhau dấu phẩy
+  const isBatch = petInput === "all" || petInput.includes(",");
+  if (isBatch) {
+    const identifiers = petInput === "all" ? ["all"] : petInput.split(",").map((s) => s.trim()).filter(Boolean);
+    const summary = await feedPetList(player.id, identifiers, foodId);
+    const fedLines = summary.fed.map((r) => `✅ **${r.petName}** +${r.petExperience} EXP`).join("\n") || "Không có pet nào được cho ăn.";
+    const skipLines = summary.skipped.map((r) => `⚠️ **${r.petName}** — ${r.reason}`).join("\n");
+    const embed = new EmbedBuilder()
+      .setColor(0x7BC96F)
+      .setTitle(`🍽️ Cho ăn hàng loạt — ${summary.foodName}`)
+      .addFields({ name: `Đã cho ăn (${summary.fed.length} pet)`, value: fedLines, inline: false });
+    if (skipLines) embed.addFields({ name: `Bỏ qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+    if (summary.totalUserExperience > 0) embed.setFooter({ text: `+${summary.totalUserExperience} EXP cho ${interaction.user.username}` });
+    await interaction.editReply({ embeds: [embed] });
+    return;
+  }
+
+  // Single feed: petInput là petCode từ autocomplete
+  const result = await feedPet(player.id, petInput, foodId);
   await interaction.editReply(`🍽️ ${interaction.user.username} đã cho **${result.petName}** ăn **${result.foodName}**! +${result.userExperience} EXP cho ${interaction.user.username}, +${result.petExperience} EXP cho ${result.petName}.`);
 }
 
 async function petting(interaction: ChatInputCommandInteraction): Promise<void> {
   await interaction.deferReply();
   const player = await ensurePlayer(interaction.user.id);
-  const petCode = interaction.options.getString("pet", true);
-  const result = await petPet(player.id, petCode);
+  const petInput = interaction.options.getString("pet", true);
+
+  // Batch mode: "all" hoặc danh sách tên cách nhau dấu phẩy
+  const isBatch = petInput === "all" || petInput.includes(",");
+  if (isBatch) {
+    const identifiers = petInput === "all" ? ["all"] : petInput.split(",").map((s) => s.trim()).filter(Boolean);
+    const summary = await petPetList(player.id, identifiers);
+    const pettingLines = summary.petting.map((r) => `💖 **${r.petName}** yêu thích: ${r.affection} (còn ${r.remaining} lượt)`).join("\n") || "Không có pet nào được âu yếm.";
+    const skipLines = summary.skipped.map((r) => `⚠️ **${r.petName}** — ${r.reason}`).join("\n");
+    const embed = new EmbedBuilder()
+      .setColor(0xF9A8D8)
+      .setTitle(`💖 Âu yếm hàng loạt`)
+      .addFields({ name: `Đã âu yếm (${summary.petting.length} pet)`, value: pettingLines, inline: false });
+    if (skipLines) embed.addFields({ name: `Bỏ qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+    await interaction.editReply({ embeds: [embed] });
+    return;
+  }
+
+  // Single petting: petInput là petCode từ autocomplete
+  const result = await petPet(player.id, petInput);
   await interaction.editReply(`💖 ${interaction.user.username} đã âu yếm **${result.petName}**! Yêu thích: **${result.affection}**. Còn ${result.remaining}/${GAME.dailyPetLimit} lượt hôm nay.`);
 }
 
@@ -290,6 +329,50 @@ async function setprefix(interaction: ChatInputCommandInteraction): Promise<void
   }
 }
 
+async function notify(interaction: ChatInputCommandInteraction): Promise<void> {
+  if (!interaction.inGuild()) {
+    await interaction.reply({ content: "Lệnh /notify chỉ dùng được trong máy chủ (server).", flags: MessageFlags.Ephemeral as number });
+    return;
+  }
+  const selected = interaction.options.getChannel("channel");
+  const current = await getNotificationChannel(interaction.guildId!);
+
+  let channelId: string | null;
+  if (selected) {
+    if (!isTextChannelType(selected.type)) {
+      await interaction.reply({ content: "⚠️ Hãy chọn kênh văn bản (text channel) để nhận thông báo.", flags: MessageFlags.Ephemeral as number });
+      return;
+    }
+    channelId = selected.id;
+  } else if (current) {
+    channelId = null;
+  } else {
+    channelId = interaction.channelId;
+  }
+
+  await setNotificationChannel(interaction.guildId!, channelId);
+  if (!channelId) {
+    await interaction.reply({ content: "🔕 Đã tắt thông báo cập nhật của server.", flags: MessageFlags.Ephemeral as number });
+    return;
+  }
+  const announced = await sendLatestUpdateToGuild(interaction.client, interaction.guildId!);
+  const sentText = announced ? "\n📢 Đã gửi thông báo cập nhật mới nhất đến kênh này." : "";
+  await interaction.reply({
+    content: `✅ Đã đăng ký <#${channelId}> nhận thông báo cập nhật phiên bản.${sentText}`,
+    flags: MessageFlags.Ephemeral as number,
+  });
+}
+
+function isTextChannelType(type: ChannelType): boolean {
+  return [
+    ChannelType.GuildText,
+    ChannelType.GuildAnnouncement,
+    ChannelType.PublicThread,
+    ChannelType.PrivateThread,
+    ChannelType.GuildForum,
+  ].includes(type);
+}
+
 async function play(interaction: ChatInputCommandInteraction): Promise<void> {
   await ensurePlayer(interaction.user.id);
   const gameOption = interaction.options.getString("game", true);
@@ -326,7 +409,10 @@ async function help(interaction: ChatInputCommandInteraction): Promise<void> {
     "",
     "**Xã hội**",
     "`/leaderboard` — bảng xếp hạng",
-    "`/start` — tạo hồ sơ nếu chưa có"
+    "`/start` — tạo hồ sơ nếu chưa có",
+    "",
+    "**Server**",
+    "`/notify #kênh` — đăng ký nhận thông báo cập nhật (gõ /notify để tắt)"
   ].join("\n");
   await interaction.reply({ embeds: [new EmbedBuilder().setColor(0x5865F2).setTitle("🐾 Pet Haven — Hướng dẫn").setDescription(description)] });
 }

@@ -5,10 +5,11 @@ import { GAME, houseSlotCount, HOUSE_PRIORITY, moodLabel, petExperienceBonus, SP
 import { boardRows, createGame } from "../games/tic-tac-toe.js";
 import { mineDifficultyRow, startTicTacToe } from "./button-handler.js";
 import { ensurePlayer, getPlayer } from "../services/player.service.js";
-import { adoptPet, feedPet, petPet, totalPetCapacity } from "../services/pet.service.js";
+import { adoptPet, feedPet, feedPetList, petPet, petPetList, totalPetCapacity } from "../services/pet.service.js";
 import { buyFood, buyHouse } from "../services/shop.service.js";
 import { claimDaily } from "../services/daily.service.js";
 import { setPrefix } from "../services/guild.service.js";
+import { getNotificationChannel, setNotificationChannel, sendLatestUpdateToGuild } from "../services/announcement.service.js";
 import { prisma } from "../database/prisma.js";
 
 export function parsePrefixCommand(content: string, prefix: string): { args: string[] } | null {
@@ -50,6 +51,7 @@ async function route(message: Message, command: string, args: string[]): Promise
     case "play": return pPlay(message, args);
     case "leaderboard": return pLeaderboard(message);
     case "setprefix": return pSetPrefix(message, args);
+    case "notify": return pNotify(message, args);
     default:
       await message.reply(`Không nhận ra lệnh \`${command}\`. Gõ \`${"p!"}help\` để xem danh sách lệnh.`);
   }
@@ -91,6 +93,7 @@ function helpAll(): string {
     "",
     "**Khác**",
     "`p!leaderboard` — bảng xếp hạng",
+    "`p!notify [#kênh|off]` — bật/tắt kênh nhận thông báo cập nhật",
     "`p!help <pet|kinh|game>` — hướng dẫn theo danh mục",
   ].join("\n");
 }
@@ -124,9 +127,9 @@ async function pAdopt(message: Message, userId: string, args: string[]): Promise
   const variant = option.variants[Math.floor(Math.random() * option.variants.length)];
   const petCount = await prisma.pet.count({ where: { ownerId: userId } });
   const feeNote = petCount >= GAME.adopt.freeAdopts ? ` (phí ${GAME.adopt.cost} vàng)` : " (miễn phí)";
-  const { pet, feeApplied } = await adoptPet(userId, species, name, variant);
+  const { feeApplied } = await adoptPet(userId, species, name, variant);
   const feeMsg = feeApplied ? `\n🪙 Đã trừ ${GAME.adopt.cost} vàng phí nhận nuôi.` : "";
-  await privateReply(message, `✨ Bạn đã nhận **${name}** — ${option.icon} ${option.label} giống ${variant}${feeNote}${feeMsg}\nMã pet: \`${pet.petCode}\``);
+  await privateReply(message, `✨ Bạn đã nhận **${name}** — ${option.icon} ${option.label} giống ${variant}${feeNote}${feeMsg}\nDùng **p!feed ${name} <mã thức ăn>** để cho ăn!`);
 }
 
 function normalizeSpecies(raw: string): PetSpecies | null {
@@ -150,8 +153,7 @@ async function pPets(message: Message, userId: string): Promise<void> {
   const description = pets.map((pet) => {
     const species = SPECIES[pet.species];
     return `${species.icon} **${pet.name}** · ${pet.variant}\n` +
-      `Lv.${pet.level} · bonus +${petExperienceBonus(pet.level)}% EXP · ${moodLabel(pet.mood)} · comfort ${pet.comfort}/100 · yêu thích ${pet.affection}\n` +
-      `Mã: \`${pet.petCode}\``;
+      `Lv.${pet.level} · bonus +${petExperienceBonus(pet.level)}% EXP · ${moodLabel(pet.mood)} · comfort ${pet.comfort}/100 · yêu thích ${pet.affection}`;
   }).join("\n\n");
   await privateReply(message, { embeds: [new EmbedBuilder().setColor(0x7BC96F).setTitle("Các pet của bạn").setDescription(description)] });
 }
@@ -164,14 +166,38 @@ async function pFeed(message: Message, userId: string, args: string[]): Promise<
     return;
   }
 
-  let petCode: string | null = args[0] ?? null;
-  let foodId: string | null = args[1] ?? null;
+  const petArg = args[0] ?? null;
+  const foodId = args[1] ?? null;
 
-  if (!petCode || !foodId) {
+  // Batch mode: "all" hoặc danh sách tên cách nhau dấu phẩy
+  if (petArg) {
+    const isBatch = petArg === "all" || petArg.includes(",");
+    if (isBatch) {
+      if (!foodId) {
+        await privateReply(message, "Cách dùng batch: `p!feed all <mã thức ăn>` hoặc `p!feed dog1,cat1 <mã thức ăn>`");
+        return;
+      }
+      const identifiers = petArg === "all" ? ["all"] : petArg.split(",").map((s) => s.trim()).filter(Boolean);
+      const summary = await feedPetList(player.id, identifiers, foodId);
+      const fedLines = summary.fed.map((r) => `✅ **${r.petName}** +${r.petExperience} EXP`).join("\n") || "Không có pet nào được cho ăn.";
+      const skipLines = summary.skipped.map((r) => `⚠️ **${r.petName}** — ${r.reason}`).join("\n");
+      const embed = new EmbedBuilder()
+        .setColor(0x7BC96F)
+        .setTitle(`🍽️ Cho ăn hàng loạt — ${summary.foodName}`)
+        .addFields({ name: `Đã cho ăn (${summary.fed.length} pet)`, value: fedLines, inline: false });
+      if (skipLines) embed.addFields({ name: `Bỏ qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+      if (summary.totalUserExperience > 0) embed.setFooter({ text: `+${summary.totalUserExperience} EXP cho ${message.author.username}` });
+      await privateReply(message, { embeds: [embed] });
+      return;
+    }
+  }
+
+  // Single feed: args[0] = tên pet, args[1] = mã thức ăn
+  if (!petArg || !foodId) {
     await privateReply(message, await feedCatalog(player.id));
     return;
   }
-  const result = await feedPet(player.id, petCode, foodId);
+  const result = await feedPet(player.id, petArg, foodId);
   await privateReply(message, `🍽️ ${message.author.username} đã cho **${result.petName}** ăn **${result.foodName}**! +${result.userExperience} EXP cho ${message.author.username}, +${result.petExperience} EXP cho ${result.petName}.`);
 }
 
@@ -179,7 +205,7 @@ async function feedCatalog(userId: string): Promise<string> {
   const pets = await prisma.pet.findMany({ where: { ownerId: userId }, orderBy: { createdAt: "asc" } });
   const inventory = await prisma.userInventory.findMany({ where: { userId }, include: { food: true } });
   const petLines = pets.length
-    ? pets.map((p) => `${SPECIES[p.species].icon} \`${p.petCode}\` **${p.name}** (${SPECIES[p.species].label})`).join("\n")
+    ? pets.map((p) => `${SPECIES[p.species].icon} **${p.name}** (${SPECIES[p.species].label})`).join("\n")
     : "Chưa có pet";
   const foodLines = inventory
     .filter((i) => i.quantity > 0)
@@ -192,7 +218,8 @@ async function feedCatalog(userId: string): Promise<string> {
     "**Kho thức ăn**",
     foodLines,
     "",
-    "Dùng: `p!feed <mã pet> <mã thức ăn>`  → ví dụ `p!feed 00001 basic-kibble`",
+    "Dùng: `p!feed <tên pet> <mã thức ăn>` — ví dụ `p!feed Mèo Con basic-kibble`",
+    "Cho ăn hàng loạt: `p!feed all <mã thức ăn>` hoặc `p!feed dog1,cat1 <mã thức ăn>`",
   ].join("\n");
 }
 
@@ -202,17 +229,39 @@ async function pPetting(message: Message, userId: string, args: string[]): Promi
     await privateReply(message, "Bạn chưa có pet. Dùng `p!adopt` nhé!");
     return;
   }
-  let petCode: string | null = args[0] ?? null;
-  if (!petCode) {
-    if (pets.length === 1) {
-      petCode = pets[0].petCode;
-    } else {
-      const lines = pets.map((p) => `${SPECIES[p.species].icon} \`${p.petCode}\` **${p.name}** — đã âu yếm ${p.dailyPetCount}/5 · yêu thích ${p.affection}`).join("\n");
-      await privateReply(message, { embeds: [new EmbedBuilder().setColor(0xF9A8D8).setTitle("Chọn pet để âu yếm").setDescription(`${lines}\n\nDùng: \`p!petting <mã pet>\``)] });
+
+  const petArg = args[0] ?? null;
+
+  // Batch mode: "all" hoặc danh sách tên cách nhau dấu phẩy
+  if (petArg) {
+    const isBatch = petArg === "all" || petArg.includes(",");
+    if (isBatch) {
+      const identifiers = petArg === "all" ? ["all"] : petArg.split(",").map((s) => s.trim()).filter(Boolean);
+      const summary = await petPetList(userId, identifiers);
+      const pettingLines = summary.petting.map((r) => `💖 **${r.petName}** yêu thích: ${r.affection} (còn ${r.remaining} lượt)`).join("\n") || "Không có pet nào được âu yếm.";
+      const skipLines = summary.skipped.map((r) => `⚠️ **${r.petName}** — ${r.reason}`).join("\n");
+      const embed = new EmbedBuilder()
+        .setColor(0xF9A8D8)
+        .setTitle(`💖 Âu yếm hàng loạt`)
+        .addFields({ name: `Đã âu yếm (${summary.petting.length} pet)`, value: pettingLines, inline: false });
+      if (skipLines) embed.addFields({ name: `Bỏ qua (${summary.skipped.length} pet)`, value: skipLines, inline: false });
+      await privateReply(message, { embeds: [embed] });
       return;
     }
   }
-  const result = await petPet(userId, petCode);
+
+  // Single petting: arg là tên pet (hoặc petCode — service resolve cả hai)
+  if (!petArg) {
+    if (pets.length === 1) {
+      const result = await petPet(userId, pets[0].petCode);
+      await privateReply(message, `💖 Pet rất thích! Yêu thích: **${result.affection}**. Còn ${result.remaining}/${GAME.dailyPetLimit} lượt hôm nay.`);
+      return;
+    }
+    const lines = pets.map((p) => `${SPECIES[p.species].icon} **${p.name}** — đã âu yếm ${p.dailyPetCount}/5 · yêu thích ${p.affection}`).join("\n");
+    await privateReply(message, { embeds: [new EmbedBuilder().setColor(0xF9A8D8).setTitle("Chọn pet để âu yếm").setDescription(`${lines}\n\nDùng: \`p!petting <tên pet>\` hoặc \`p!petting all\``)] });
+    return;
+  }
+  const result = await petPet(userId, petArg);
   await privateReply(message, `💖 Pet rất thích! Yêu thích: **${result.affection}**. Còn ${result.remaining}/${GAME.dailyPetLimit} lượt hôm nay.`);
 }
 
@@ -345,6 +394,39 @@ async function pLeaderboard(message: Message): Promise<void> {
   const levelLines = topLevel.map((u, i) => `${i + 1}. <@${u.discordId}> — Lv.${u.level} · ${u._count.pets} pet`).join("\n");
   const goldLines = topGold.map((u, i) => `${i + 1}. <@${u.discordId}> — 🪙 ${u.gold}`).join("\n");
   await message.reply({ embeds: [new EmbedBuilder().setColor(0xE1C699).setTitle("🏆 Bảng xếp hạng").addFields({ name: "Level", value: levelLines || "Chưa có", inline: true }, { name: "Vàng", value: goldLines || "Chưa có", inline: true })] });
+}
+
+async function pNotify(message: Message, args: string[]): Promise<void> {
+  if (!message.guild) {
+    await message.reply("Lệnh này chỉ dùng được trong máy chủ.");
+    return;
+  }
+  const arg = args[0]?.trim();
+  const current = await getNotificationChannel(message.guild.id);
+
+  const channelMention = arg?.match(/^<#(\d+)>$/);
+  let channelId: string | null;
+  if (channelMention) {
+    channelId = channelMention[1];
+  } else if (arg === "off" || (!arg && current)) {
+    channelId = null;
+  } else if (arg && /^\d+$/.test(arg)) {
+    channelId = arg;
+  } else if (!arg) {
+    channelId = message.channelId;
+  } else {
+    await message.reply("Cách dùng: `p!notify` (dùng kênh hiện tại), `p!notify #kênh` (chọn kênh) hoặc `p!notify off` (tắt).");
+    return;
+  }
+
+  await setNotificationChannel(message.guild.id, channelId);
+  if (!channelId) {
+    await message.reply("🔕 Đã tắt thông báo cập nhật của server.");
+    return;
+  }
+  const announced = await sendLatestUpdateToGuild(message.client, message.guild.id);
+  const sentText = announced ? "\n📢 Đã gửi thông báo cập nhật mới nhất đến kênh này." : "";
+  await message.reply(`✅ Đã đăng ký <#${channelId}> nhận thông báo cập nhật.${sentText}`);
 }
 
 async function pSetPrefix(message: Message, args: string[]): Promise<void> {

@@ -101,8 +101,10 @@ model UserHouse {
 }
 
 model GuildConfig {
-  guildId String @id
-  prefix  String @default("p!")
+  guildId               String   @id
+  prefix                String   @default("p!")
+  announcementChannelId String?
+  lastAnnouncedVersion  String?
 }
 
 enum HouseType {
