@@ -6,7 +6,7 @@ import { handleAutocomplete } from "./interactions/autocomplete-handler.js";
 import { handlePrefixCommand } from "./interactions/prefix-handler.js";
 import { getPrefix } from "./services/guild.service.js";
 import { applyNeglect } from "./services/pet.service.js";
-import { broadcastUpdateNotifications, ensureAnnouncementColumns } from "./services/announcement.service.js";
+import { broadcastUpdateNotifications, broadcastShutdownNotice, ensureAnnouncementColumns } from "./services/announcement.service.js";
 import { enqueue } from "./utils/user-queue.js";
 
 const client = new Client({
@@ -90,6 +90,20 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
     }
   }
 });
+
+async function shutdown(signal: string): Promise<void> {
+  console.log(`[shutdown] Received ${signal} — notifying servers and exiting.`);
+  // Give Discord at most 5 s to deliver the message before giving up.
+  await Promise.race([
+    broadcastShutdownNotice(client, signal === "SIGTERM" ? "triển khai lại" : "tắt thủ công"),
+    new Promise<void>((resolve) => setTimeout(resolve, 5_000)),
+  ]);
+  client.destroy();
+  process.exit(0);
+}
+
+process.once("SIGTERM", () => void shutdown("SIGTERM"));
+process.once("SIGINT",  () => void shutdown("SIGINT"));
 
 async function main(): Promise<void> {
   await client.login(env.token);

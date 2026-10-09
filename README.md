@@ -1,6 +1,154 @@
-# Pet Haven Discord Bot
+<div align="center">
 
-Bot nuôi pet trên Discord: nhận pet (chó/mèo/hamster/thỏ/chim/cá), điểm danh hằng ngày, mua nhiều nhà ở, và chơi mini-game XO + dò mìn. Hỗ trợ cả slash command lẫn lệnh prefix (`p!`).
+# 🐾 Pet Haven
+
+**Bot nuôi thú cưng ảo trên Discord**
+
+*Nhận nuôi · Chăm sóc · Cùng lớn lên*
+
+[![discord.js](https://img.shields.io/badge/discord.js-v14-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.js.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E=20-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
+
+</div>
+
+---
+
+## ✨ Về bot
+
+Pet Haven cho phép người dùng Discord nhận nuôi thú cưng ảo, chăm sóc chúng hằng ngày và xây dựng cuộc sống riêng trong server. Thú cưng có cảm xúc thật — bỏ bê chúng và chúng sẽ buồn 🥺
+
+📖 **[Đọc hướng dẫn chơi đầy đủ →](./GAMEPLAY.md)**
+
+---
+
+## 🐾 Thú cưng có thể nhận nuôi
+
+| Tier | Loài | Icon |
+|------|------|------|
+| Cơ bản (2 pet đầu miễn phí) | Chó, Mèo, Hamster, Thỏ, Chim, Cá | 🐶 🐱 🐹 🐰 🐦 🐟 |
+| Nâng cao (+50 vàng) | Rắn, Nhện, Chuột, Chồn | 🐍 🕷️ 🐀 🦡 |
+| Huyền thoại (lv15 · +100 vàng) | Kỳ lân | 🦄 |
+
+---
+
+## ⚡ Tính năng nổi bật
+
+- 🏠 **Đa nhà ở** — sở hữu nhiều căn, hệ thống slot mở theo level
+- 📈 **Tiến trình** — cả chủ lẫn pet đều lên level, pet cao level tặng EXP bonus cho chủ
+- 🔥 **Streak điểm danh** — duy trì liên tục để nhận thưởng bonus tối đa +50%
+- 😊 **Hệ thống cảm xúc** — comfort & mood thay đổi theo cách bạn chăm sóc
+- 🎮 **Mini-game** — Caro (XO) và Dò Mìn, tối đa 10 ván/ngày
+- 🛒 **Shop & Inventory** — thức ăn mở theo level, autocomplete thông minh
+- ⚙️ **Prefix tùy chỉnh** — mỗi server tự chọn prefix riêng (mặc định `p!`)
+
+---
+
+## 🎮 Lệnh
+
+| Lệnh | Mô tả |
+|------|-------|
+| `/start` | Tạo hồ sơ người nuôi + nhận quà khởi đầu |
+| `/adopt` | Nhận nuôi thú cưng mới |
+| `/pets` | Danh sách thú cưng đang nuôi |
+| `/profile` | Xem cấp độ, vàng, EXP, slot nhà |
+| `/daily` | Điểm danh hằng ngày (có streak bonus) |
+| `/feed` | Cho thú cưng ăn |
+| `/petting` | Âu yếm thú cưng |
+| `/inventory` | Kho thức ăn |
+| `/shop food` | Mua thức ăn |
+| `/shop house` | Mua / nâng cấp nhà |
+| `/house list` | Xem nhà sở hữu |
+| `/play` | Chơi XO hoặc Dò Mìn |
+| `/leaderboard` | Bảng xếp hạng |
+| `/help` | Hướng dẫn nhanh |
+| `/setprefix` | Đổi prefix lệnh text *(Admin)* |
+
+> Ngoài slash command, bot còn hỗ trợ prefix `p!` (ví dụ: `p!pets`, `p!feed`)
+
+---
+
+## 🚀 Cài đặt & Chạy
+
+### Yêu cầu
+- Node.js ≥ 20
+- Discord Bot Token & Application ID
+
+### Các bước
+
+```bash
+# 1. Clone repo & cài phụ thuộc
+git clone <repo-url>
+cd pet-haven
+npm install
+
+# 2. Tạo file .env từ mẫu
+cp .env.example .env
+# → Điền DISCORD_TOKEN, DISCORD_CLIENT_ID, DATABASE_URL
+
+# 3. Khởi tạo database
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+
+# 4. Đăng ký slash commands
+npm run register
+
+# 5. Chạy bot
+npm run dev        # Development (hot-reload)
+npm run start      # Production
+```
+
+---
+
+## 🔧 Biến môi trường
+
+| Biến | Bắt buộc | Mô tả |
+|------|----------|-------|
+| `DISCORD_TOKEN` | ✅ | Bot token từ Discord Developer Portal |
+| `DISCORD_CLIENT_ID` | ✅ | Application ID của bot |
+| `DATABASE_URL` | ✅ | Đường dẫn SQLite, ví dụ `file:./dev.db` |
+| `DISCORD_GUILD_ID` | ⬜ | Guild ID để đăng ký lệnh nhanh khi dev |
+
+---
+
+## 🗂️ Cấu trúc dự án
+
+```
+src/
+├── index.ts                  # Entry point
+├── config/
+│   ├── env.ts                # Đọc biến môi trường
+│   └── game.ts               # Hằng số & balance cân bằng game
+├── commands/
+│   └── definitions.ts        # Định nghĩa slash commands
+├── services/                 # Business logic
+│   ├── player.service.ts
+│   ├── pet.service.ts
+│   ├── daily.service.ts
+│   ├── minigame.service.ts
+│   ├── shop.service.ts
+│   └── experience.service.ts
+├── games/
+│   ├── tic-tac-toe.ts        # Logic Caro
+│   └── mine-sessions.ts      # Logic Dò Mìn
+├── interactions/
+│   ├── command-handler.ts    # Router slash commands
+│   └── button-handler.ts     # Router button / select menu
+└── database/
+    └── prisma.ts             # Prisma singleton
+prisma/
+├── schema.prisma
+└── seed.ts
+```
+---
+
+<div align="center">
+
+Made with 💜 for Discord pet lovers
+
+</div>
 
 ## Tính năng
 
@@ -11,65 +159,6 @@ Bot nuôi pet trên Discord: nhận pet (chó/mèo/hamster/thỏ/chim/cá), đi�
 - **Comfort & mood**: 3 trạng thái Buồn/Ổn/Vui vẻ; bỏ bê (quên cho ăn/pet vài ngày) bị trừ comfort.
 - **Đa nhà ở**: sở hữu nhiều căn nhà theo slot cấp độ, tổng hợp sức chứa pet, comfort tối thiểu theo nhà xịn nhất. Không cần lệnh switch thủ công.
 - **Kinh tế**: vàng, shop thức ăn/nhà, phí nhận nuôi (2 pet đầu miễn phí, từ pet thứ 3 phí 200 vàng), giới hạn thưởng chống farm.
-- **Prefix commands** (`p!start`, `p!pets`, `p!feed`…): hỗ trợ cả DM và server, prefix tùy chỉnh per-guild.
 - **Autocomplete** toàn diện cho `/feed`, `/petting`, `/shop`: gợi ý pet, thức ăn, nhà.
 - **Mini-game**: XO (Caro) và Dò mìn — giới hạn 10 ván/ngày (từ ván 6 chỉ nửa thưởng).
 
-## Lệnh (Slash)
-
-| Lệnh | Mô tả |
-|------|-------|
-| `/start` | Tạo hồ sơ người nuôi + quà khởi đầu |
-| `/adopt` | Nhận pet mới (6 loài) |
-| `/pets` | Xem danh sách pet + mã pet |
-| `/profile` | Level, EXP, vàng, nhà, slot |
-| `/daily` | Điểm danh hằng ngày (streak bonus) |
-| `/feed` | Cho pet ăn (autocomplete chọn pet + thức ăn) |
-| `/petting` | Âu yếm pet (autocomplete chọn pet) |
-| `/inventory` | Kho thức ăn (cảnh báo sắp hết) |
-| `/shop food` | Catalog + mua thức ăn (autocomplete) |
-| `/shop house` | Catalog + mua/nâng cấp nhà |
-| `/house list` | Xem nhà sở hữu, slot, sức chứa pet |
-| `/setprefix` | Đổi prefix lệnh text (Admin) |
-| `/play` | Chơi XO hoặc dò mìn |
-| `/leaderboard` | Bảng xếp hạng level & vàng |
-| `/help` | Hướng dẫn nhanh |
-
-## Thang điểm & cân bằng
-
-- Pet level cao tăng % EXP cho chủ: +5% mỗi 10 level, tối đa **+50%**.
-- Điểm danh hằng ngày: thưởng vàng/EXP tăng theo level chủ; streak +5%/ngày, tối đa **+50%**.
-- Cho ăn thức ăn pet thích (+25% EXP pet) và tăng comfort nhiều hơn.
-- Bỏ bê 2+ ngày: mỗi ngày trừ 10 comfort (tối thiểu 0). Mood chuyển Buồn khi comfort ≤ 34, Vui khi ≥ 70.
-- Nhà duy trì comfort tối thiểu cho pet: BASIC 25, COZY 45, VILLA 65.
-- Mini-game: 10 ván/ngày; ván 6+ chỉ nhận 50% thưởng.
-
-## Cấu trúc
-
-```
-src/
-  index.ts              # Entry point: login, interaction router, neglect job
-  config/
-    env.ts              # Đọc .env
-    game.ts             # Hằng số game, species, house, mood helpers
-  commands/
-    definitions.ts      # Định nghĩa slash commands
-  services/
-    player.service.ts   # Tạo hồ sơ, lấy người chơi
-    pet.service.ts      # Nhận pet, cho ăn, âu yếm, bỏ bê
-    daily.service.ts    # Điểm danh hằng ngày + streak
-    minigame.service.ts # Giới hạn + decay thưởng mini-game
-    shop.service.ts     # Mua thức ăn, nhà
-    experience.service.ts
-  games/
-    tic-tac-toe.ts      # Logic XO
-    mine-sessions.ts    # Logic dò mìn
-  interactions/
-    command-handler.ts  # Xử lý slash commands
-    button-handler.ts   # Xử lý button + select menu (xo:, mine:, minediff:)
-  database/
-    prisma.ts
-prisma/
-  schema.prisma
-  seed.ts
-```
