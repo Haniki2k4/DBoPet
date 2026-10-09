@@ -11,12 +11,14 @@
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E=20-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 
+![Pet Haven Banner](./assets/banner.png)
+
 </div>
 
 ---
 
 ## ✨ Về bot
-
+s
 Pet Haven cho phép người dùng Discord nhận nuôi thú cưng ảo, chăm sóc chúng hằng ngày và xây dựng cuộc sống riêng trong server. Thú cưng có cảm xúc thật — bỏ bê chúng và chúng sẽ buồn 🥺
 
 📖 **[Đọc hướng dẫn chơi đầy đủ →](./GAMEPLAY.md)**
