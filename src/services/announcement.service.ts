@@ -74,3 +74,34 @@ export async function broadcastUpdateNotifications(client: Client): Promise<void
     await sendLatestUpdateToGuild(client, config.guildId);
   }
 }
+
+/**
+ * Gửi thông báo tắt bot đến tất cả server đã đăng ký kênh thông báo.
+ * Gọi trong signal handler (SIGTERM/SIGINT) trước khi destroy client.
+ */
+export async function broadcastShutdownNotice(client: Client, reason = "bảo trì"): Promise<void> {
+  const embed = new EmbedBuilder()
+    .setColor(0xED4245) // Discord red
+    .setTitle("🔴 Pet Haven đang bảo trì")
+    .setDescription(
+      `Haven đang bảo trì **do ${reason}**.\n` +
+      "Thú cưng của bạn vẫn an toàn và sẽ không bị ảnh hưởng.\n" +
+      "Khi Haven quay trở lại, mọi thứ tiếp tục bình thường! 🐾"
+    )
+    .setTimestamp()
+    .setFooter({ text: "Pet Haven sẽ sớm quay lại" });
+
+  const configs = await prisma.guildConfig.findMany({
+    where: { announcementChannelId: { not: null } },
+    select: { announcementChannelId: true },
+  });
+
+  await Promise.allSettled(
+    configs.map(async ({ announcementChannelId }) => {
+      if (!announcementChannelId) return;
+      const channel = await client.channels.fetch(announcementChannelId).catch(() => null);
+      if (!channel || !channel.isTextBased() || channel.isDMBased()) return;
+      await channel.send({ embeds: [embed] });
+    })
+  );
+}
